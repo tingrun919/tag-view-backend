@@ -151,6 +151,15 @@ export const appRouter = [
             { path: 'index', title: '单用户查询', name: 'query-index', component: () => import('@/views/user-query/user-query.vue') },
         ]
 	},
+	{
+        path: '/label',
+        icon: 'flag',
+        name: 'label',
+        component: Main,
+        children: [
+            { path: 'index', title: '标签口径查询', name: 'label-index', component: () => import('@/views/label-query/label-query.vue') },
+        ]
+	},
 	// {
     //     path: '/form',
     //     icon: 'android-checkbox',
