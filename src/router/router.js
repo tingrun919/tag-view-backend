@@ -160,30 +160,15 @@ export const appRouter = [
             { path: 'index', title: '标签口径查询', name: 'label-index', component: () => import('@/views/label-query/label-query.vue') },
         ]
 	},
-	// {
-    //     path: '/form',
-    //     icon: 'android-checkbox',
-    //     name: 'form',
-    //     title: '标签口径',
-    //     component: Main,
-    //     children: [
-    //         { path: 'artical-publish', title: '文章发布', name: 'artical-publish', icon: 'compose', component: () => import('@/views/form/article-publish/article-publish.vue') },
-    //         { path: 'workflow', title: '工作流', name: 'workflow', icon: 'arrow-swap', component: () => import('@/views/form/work-flow/work-flow.vue') }
-
-    //     ]
-	// },
-	// {
-    //     path: '/form',
-    //     icon: 'android-checkbox',
-    //     name: 'form',
-    //     title: '用户管理',
-    //     component: Main,
-    //     children: [
-    //         { path: 'artical-publish', title: '文章发布', name: 'artical-publish', icon: 'compose', component: () => import('@/views/form/article-publish/article-publish.vue') },
-    //         { path: 'workflow', title: '工作流', name: 'workflow', icon: 'arrow-swap', component: () => import('@/views/form/work-flow/work-flow.vue') }
-
-    //     ]
-	// },
+	{
+        path: '/user',
+        icon: 'person-stalker',
+        name: 'user',
+        component: Main,
+        children: [
+            { path: 'index', title: '用户管理', name: 'user-index', component: () => import('@/views/user/user.vue') },
+        ]
+	},
 	// {
     //     path: '/form',
     //     icon: 'android-checkbox',
