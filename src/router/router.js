@@ -169,18 +169,15 @@ export const appRouter = [
             { path: 'index', title: '用户管理', name: 'user-index', component: () => import('@/views/user/user.vue') },
         ]
 	},
-	// {
-    //     path: '/form',
-    //     icon: 'android-checkbox',
-    //     name: 'form',
-    //     title: '公告设置',
-    //     component: Main,
-    //     children: [
-    //         { path: 'artical-publish', title: '文章发布', name: 'artical-publish', icon: 'compose', component: () => import('@/views/form/article-publish/article-publish.vue') },
-    //         { path: 'workflow', title: '工作流', name: 'workflow', icon: 'arrow-swap', component: () => import('@/views/form/work-flow/work-flow.vue') }
-
-    //     ]
-	// },
+	{
+        path: '/bulletin',
+        icon: 'android-checkbox',
+        name: 'bulletin',
+        component: Main,
+        children: [
+            { path: 'index', title: '公告设置', name: 'bulletin-index', component: () => import('@/views/bulletin/bulletin.vue') }
+        ]
+	},
 ];
 
 // 所有上面定义的路由都要写在下面的routers里
