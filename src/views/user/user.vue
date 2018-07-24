@@ -84,7 +84,7 @@
 				}
 			};
 			return {
-				pageTotal: 1,//总条数
+				pageTotal: null,//总条数
 				resultData: [],//列表数据
 				loading: false,//表格加载
 				addUserModal: false,//新增弹窗的modal
@@ -137,17 +137,18 @@
 				columns: [
 					{
 						title: '人员名称',
-						key: 'staffName'
+						key: 'staffName',
+						align: 'center',
 					},
 					{
 						title: '账号',
-						key: 'staffLoginname'
+						key: 'staffLoginname',
+						align: 'center',
 					},
 					{
 						title: '所属角色',
 						key: 'staffRoleid',
 						align: 'center',
-						sortable: true,
 						render: (h, params) => {
 							const row = params.row;
 							const text = row.staffRoleid === 1 ? '系统管理员' : row.staffRoleid === 2 ? '运维人员' : '客服人员'
