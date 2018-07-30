@@ -70,9 +70,9 @@
 								Cookies.set('password', this.form.password);
 								this.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
 								//staffRoleid ·1:后台管理员 ·2:运维人员 ·3:客服人员
-								if (result.staffRoleid === 1) {
+								if (result[0].staffRoleid === 1) {
 									Cookies.set('access', 1);
-								} else if (result.staffRoleid === 2) {
+								} else if (result[0].staffRoleid === 2) {
 									Cookies.set('access', 2);
 								} else {
 									Cookies.set('access', 3);

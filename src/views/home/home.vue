@@ -7,32 +7,19 @@
 		<Row>
 			<Card>
 				<Row type="flex" class="user-infor">
-					<Col span="8">
-					<Row class-name="made-child-con-middle" type="flex" align="middle">
-						<img class="avator-img" :src="avatorPath" />
-					</Row>
-					</Col>
 					<Col span="16" style="padding-left:6px;">
 					<Row class-name="made-child-con-middle" type="flex" align="middle">
 						<div>
-							<b class="card-user-infor-name">Admin</b>
-							<p>super admin</p>
+							<b class="card-user-infor-name">欢迎回来，{{user}}</b>
+							<p>{{role}}</p>
 						</div>
 					</Row>
 					</Col>
-				</Row>
-				<div class="line-gray"></div>
-				<Row class="margin-top-8">
 					<Col span="8">
-					<p class="notwrap">上次登录时间:</p>
+					<Row class-name="made-child-con-middle" type="flex" align="middle">
+						<b class="card-user-infor-name">{{sysDate}}</b>
+					</Row>
 					</Col>
-					<Col span="16" class="padding-left-8">2017.09.12-13:32:20</Col>
-				</Row>
-				<Row class="margin-top-8">
-					<Col span="8">
-					<p class="notwrap">上次登录地点:</p>
-					</Col>
-					<Col span="16" class="padding-left-8">北京</Col>
 				</Row>
 			</Card>
 		</Row>
@@ -40,24 +27,38 @@
 			<Card>
 				<p slot="title" class="card-title">
 					<Icon type="map"></Icon>
-					今日服务调用地理分布
+					系统公告
 				</p>
-				<div class="map-con">
-					<Col span="24">
-					<map-data-table :cityData="cityData" height="281" :style-obj="{margin: '12px 0 0 11px'}"></map-data-table>
-					</Col>
-				</div>
+				<map-data-table :cityData="cityData"></map-data-table>
 			</Card>
 		</Row>
 		<Row class="margin-top-10">
 			<Card>
 				<p slot="title" class="card-title">
-					<Icon type="ios-shuffle-strong"></Icon>
-					上周每日服务调用量(万)
+					<Icon type="ios-pricetags-outline"></Icon>
+					业务标签量
 				</p>
-				<div class="line-chart-con">
-					<service-requests></service-requests>
-				</div>
+				<!-- <div class="line-chart-con"> -->
+				<!-- <service-requests></service-requests> -->
+				<!-- </div> -->
+				<Row type="flex" class="user-infor">
+					<Col span="6" style="padding-left:6px;text-align: center;">
+					<p>内容标签</p>
+					<p>123个</p>
+					</Col>
+					<Col span="6" style="padding-left:6px;text-align: center;">
+					<p>APP偏好标签</p>
+					<p>13个</p>
+					</Col>
+					<Col span="6" style="padding-left:6px;text-align: center;">
+					<p>兴趣偏好</p>
+					<p>53个</p>
+					</Col>
+					<Col span="6" style="padding-left:6px;text-align: center;">
+					<p>系统更新时间</p>
+					<p>2018.6.6</p>
+					</Col>
+				</Row>
 			</Card>
 		</Row>
 	</div>
@@ -67,6 +68,7 @@
 	import cityData from './map-data/get-city-value.js';
 	import serviceRequests from './components/serviceRequests.vue';
 	import mapDataTable from './components/mapDataTable.vue';
+	import Cookies from 'js-cookie';
 
 	export default {
 		name: 'home',
@@ -76,6 +78,9 @@
 		},
 		data() {
 			return {
+				user: Cookies.get('user'),
+				role: Cookies.get('access') == 1 ? '后台管理员' : Cookies.get('access') == 2 ? '运维人员' : '客服人员',
+				sysDate: this.date(),
 				cityData: cityData,
 				showAddNewTodo: false,
 				newToDoItemValue: ''
@@ -87,7 +92,16 @@
 			}
 		},
 		methods: {
-
+			date() {
+				var date = new Date();
+				var Y = date.getFullYear() + '年';
+				var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '月';
+				var D = date.getDate() + '日';
+				var W = date.getDay();
+				var Week = ['日', '一', '二', '三', '四', '五', '六'];
+				var result = Y + M + D + '     ' + '星期' + Week[W]
+				return result
+			}
 		}
 	};
 </script>
