@@ -16,6 +16,11 @@ export default {
 			return Util.get(`info/deleteSystemNotice?noticeId=${id}`).then(res => {
 				return Util.result(res.data, '删除')
 			})
+		},
+		updateStateAction(params){
+			return Util.get('info/updateSystemNotice', params).then(res => {
+				return Util.result(res.data, '修改')
+			})
 		}
 	}
 }

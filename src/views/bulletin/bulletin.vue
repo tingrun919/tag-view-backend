@@ -109,6 +109,7 @@
 						title: '公告详情',
 						key: 'noticeContent',
 						align: 'center',
+						ellipsis:'true',
 					},
 					{
 						title: '发布状态',
@@ -126,7 +127,7 @@
 								},
 								on: {
 									click: () => {
-										this.updateState(params.row.noticeState == 0 ? 1 : 0, params.row.staffId)
+										this.updateState(params.row.noticeState == 0 ? 1 : 0, params.row.noticeId)
 									}
 								}
 							}, text);
@@ -160,7 +161,21 @@
 												placement: 'top'
 											}
 										}, '删除')
-									])
+									]),
+								h('Button', {
+									style: {
+										marginRight: '5px'
+									},
+									props: {
+										size: 'small',
+										type: 'success',
+									},
+									on: {
+										click: () => {
+											this.checkDetail(params.row.noticeContent)
+										}
+									}
+								}, '查看')
 							]);
 						}
 					}
@@ -206,10 +221,29 @@
 					}
 				})
 			},
-			handleRemove(id){
+			handleRemove(id) {
 				this.handleDeleteBulletin(id).then(() => {
 					this.getDataList()
 				})
+			},
+			updateState(state, id) {
+				var param = {
+					noticeId: id,
+					noticeState:state
+				}
+				this.updateStateAction(param).then(res => {
+					this.getDataList(this.params)
+				})
+			},
+			checkDetail(detail) {
+                this.$Modal.info({
+					title: '公告详情',
+					width:600,
+					closable:true,
+                    content: '<p>'+detail+'</p>',
+                    okText: '确定',
+                    cancelText: '取消'
+                });
 			}
 		}
 	}
