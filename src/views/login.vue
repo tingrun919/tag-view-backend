@@ -68,6 +68,7 @@
 							if (result) {
 								Cookies.set('user', this.form.usercount);
 								Cookies.set('password', this.form.password);
+								Cookies.set('role',result[0].staffDesc)
 								this.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
 								//staffRoleid ·1:后台管理员 ·2:运维人员 ·3:客服人员
 								if (result[0].staffRoleid === 1) {
