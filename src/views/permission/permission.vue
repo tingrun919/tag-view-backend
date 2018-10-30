@@ -1,11 +1,23 @@
 <template>
 	<div>
 		<Row>
+			<Col>
+				<Card>
+					<span>角色名称</span>
+					<Input v-model="role" placeholder="请输入角色名称" clearable style="width: 200px"/>
+
+					<Button class="margin-left-10" type="primary" icon="search" @click="search">查询</Button>
+					<Button class="margin-left-10" type="primary" icon="search" @click="isAdd = true">新增</Button>
+				</Card>
+			</Col>
+		</Row>
+		<Row>
 			<Card>
 				<Table stripe border :columns="columns" :data="resultData"></Table>
 			</Card>
 		</Row>
-		<Modal title="用户信息" width='30%' v-model="addBulletinModal">
+		<Modal title="用户信息" width='30%' v-model="addBulletinModal" @on-ok="ok"
+			   @on-cancel="addBulletinModal = false">
 			<CheckboxGroup v-model="social" size="large">
 				<Checkbox label="1">
 					<span>单用户查询</span>
@@ -24,79 +36,260 @@
 				</Checkbox>
 			</CheckboxGroup>
 		</Modal>
+		<Modal title="用户信息" width='30%' v-model="isAdd">
+			<Form ref="formValidate" :model="user" :rules="ruleValidate" :label-width="80">
+				<FormItem label="角色名称" prop="name">
+					<Input v-model="user.name" placeholder="请输入角色名称"></Input>
+				</FormItem>
+				<FormItem label="角色状态" prop="status">
+					<RadioGroup  v-model="user.status" size="large">
+						<Radio label="0">
+							<span>禁用</span>
+						</Radio>
+						<Radio label="1">
+							<span>有效</span>
+						</Radio>
+					</RadioGroup >
+				</FormItem>
+				<FormItem label="角色描述" prop="dec">
+					<Input v-model="user.dec" placeholder="请输入角色描述"></Input>
+				</FormItem>
+				<FormItem>
+					<Button type="primary" @click="addOk('formValidate')">保存</Button>
+					<Button type="ghost" @click="addCancal('formValidate')" style="margin-left: 8px">取消</Button>
+				</FormItem>
+			</Form>
+			<div slot="footer">
+			</div>
+		</Modal>
+		<Modal title="编辑用户信息" width='30%' v-model="isEdit">
+			<Form ref="editForm" :model="editContent" :rules="ruleValidate" :label-width="80">
+				<FormItem label="角色名称" prop="roleName">
+					<Input v-model="editContent.roleName" placeholder="请输入角色名称"></Input>
+				</FormItem>
+				<FormItem label="角色状态" prop="state">
+					<RadioGroup v-model="editContent.state.toString()" size="large">
+						<Radio label="0">
+							<span>禁用</span>
+						</Radio>
+						<Radio label="1">
+							<span>有效</span>
+						</Radio>
+					</RadioGroup>
+				</FormItem>
+				<FormItem label="角色描述" prop="roleDesc">
+					<Input v-model="editContent.roleDesc" placeholder="请输入角色描述"></Input>
+				</FormItem>
+				<FormItem>
+					<Button type="primary" @click="editOk('editForm')">保存</Button>
+					<Button type="ghost" @click="isEdit = false" style="margin-left: 8px">取消</Button>
+				</FormItem>
+			</Form>
+			<div slot="footer">
+			</div>
+		</Modal>
 	</div>
 </template>
 <script>
 	import permission from '../../service/permissineService.js';
-	export default {
-		mixins: [permission],
-		data() {
-			return {
-				params: {
-					noticeName: '',
-					page: 1,
-					pagesize: 10
-				},
-				social: [],
-				addBulletinModal: false,
-				resultData: [
-					{
-						name: '系统管理员',
-						id: 1,
-					},
-					{
-						name: '运维人员',
-						id: 2,
-					},
-					{
-						name: '客服人员',
-						id: 3,
-					},
-				],
-				result: [],
-				columns: [
-					{
-						title: '角色名称',
-						key: 'name',
-						align: 'center',
-					},
-					{
-						title: '操作',
-						key: 'action',
-						align: 'center',
-						render: (h, params) => {
-							return h('div', [
-								h('Button', {
-									style: {
-										marginRight: '5px'
-									},
-									props: {
-										size: 'small',
-										type: 'warning',
-									},
-									on: {
-										click: () => {
-											this.addUserModalAction(params.row.id)
-										}
-									}
-								}, '修改权限')
-							]);
-						}
-					}
-				],
-			}
-		},
-		methods: {
-			addUserModalAction(id) {
-				this.social=[],
-				this.addBulletinModal = true;
-				this.handlePermissine(id).then(res => {
-					this.result = res[0].perm_id
-					for (let i = 0; i < this.result.length; i++) {
-						this.social.push(this.result[i])
-					}
-				})
-			},
-		}
-	}
+	import Cookies from 'js-cookie';
+
+export default {
+	    mixins: [permission],
+	    data () {
+	        return {
+	            param: {
+	                roleId: '',
+	                roleState: '',
+	                page: 1,
+	                pagesize: 10
+	            },
+	            social: [],
+            	role: '',
+            	ruleValidate: {
+                name: [
+	                    { required: true, message: '请填写角色名称', trigger: 'blur' }
+	                ],
+	                status: [
+	                    { required: true, message: '请选择角色状态', trigger: 'blur' }
+	                ],
+	                dec: [
+	                    { required: true, message: '请填写角色描述', trigger: 'blur' }
+	                ],
+	                roleName: [
+	                    { required: true, message: '请填写角色名称', trigger: 'blur' }
+	                ],
+	                state: [
+	                    { required: true, message: '请选择角色状态', trigger: 'blur' }
+	                ],
+	                roleDesc: [
+	                    { required: true, message: '请填写角色描述', trigger: 'blur' }
+	                ]
+	            },
+            	user: {
+                	name: '',
+                	status: '',
+                	dec: ''
+	            },
+	            editContent: {
+	                roleName: '',
+	                state: '',
+                	roleDesc: ''
+	            },
+            	isAdd: false,
+	            isEdit: false,
+	            addBulletinModal: false,
+	            resultData: [],
+	            result: [],
+	            columns: [
+	                {
+	                    title: '序号',
+	                    key: 'index',
+	                    render: (h, params) => {
+	                        return h('span', `${params.index + (this.param.page - 1) * this.param.pagesize + 1}`);
+	                    }
+	                },
+	                {
+	                    title: '角色名称',
+	                    key: 'roleName',
+	                    align: 'center'
+	                },
+	                {
+	                    title: '角色状态',
+	                    key: 'roleState',
+	                    align: 'center',
+	                    render: (h, params) => {
+	                        return h('span', [ params.row.roleState == 1 ? '有效' : '禁用' ]);
+	                    }
+	                },
+	                {
+	                    title: '操作',
+	                    key: 'action',
+	                    align: 'center',
+	                    render: (h, params) => {
+	                        return h('div', [
+	                            h('Button', {
+	                                style: {
+	                                    marginRight: '5px'
+	                                },
+	                                props: {
+	                                    size: 'small',
+	                                    type: 'warning'
+	                                },
+	                                on: {
+	                                    click: () => {
+	                                        this.addUserModalAction(params.row.roleId);
+	                                    }
+	                                }
+	                            }, '设置'),
+                            h('Button', {
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                props: {
+                                    size: 'small',
+                                    type: 'warning'
+                                },
+                                on: {
+                                    click: () => {
+                                        this.edit(params.row.roleId);
+                                    }
+                                }
+                            }, '编辑')
+	                        ]);
+	                    }
+	                }
+	            ]
+	        };
+	    },
+	    created () {
+        this.query();
+	    },
+	    methods: {
+	        query () {
+            this.selRole(this.param)
+                .then(res => {
+                    this.resultData = res.list;
+                });
+	        },
+	        addUserModalAction (id) {
+	            this.addBulletinModal = true;
+	            this.handlePermissine(id).then(res => {
+	                this.result = res[0].perm_id;
+	                this.result = this.result.split(',');
+                for (let i = 0; i < this.result.length; i++) {
+                    this.social.push(this.result[i]);
+                }
+	            });
+	        },
+	        ok () {
+	            const arr = this.social.join(',');
+            	const param = {
+                	staffRoleid: Cookies.get('access'),
+                	desc: arr
+            	};
+	            this.updatePerm(param);
+	        },
+	        search () {
+	            this.param = Object.assign({}, this.param, {
+                roleId: this.role
+	            });
+	            this.query();
+	        },
+	        addOk (name) {
+	            this.isAdd = false;
+	            this.$refs[name].validate((valid) => {
+	                if (valid) {
+	                    const param = {
+	                        roleName: this.user.name,
+	                        roleState: this.user.status,
+	                        roleDesc: this.user.dec
+	                    };
+	                    this.addRol(param)
+	                        .then(res => { this.query(); });
+	                } else {
+	                    this.$Message.error('表单验证失败!');
+	                }
+	            });
+	        },
+        	addCancal (name) {
+            	this.isAdd = false;
+            	this.$refs[name].resetFields();
+	        },
+	        edit (id) {
+	            this.param = Object.assign({}, this.param, {
+	                roleId: id
+	            });
+	            this.selRole(this.param)
+	                .then(res => {
+                    	this.isEdit = true;
+	                    this.editContent.roleName = res.list[0].roleName;
+	                    this.editContent.state = res.list[0].roleState;
+	                    this.editContent.roleDesc = res.list[0].roleDesc;
+	                });
+	        },
+	        editOk (name) {
+	            this.isAdd = false;
+	            this.$refs[name].validate((valid) => {
+	                if (valid) {
+	                    const param = {
+	                        roleId: this.param.roleId,
+	                        roleName: this.editContent.roleName,
+	                        roleState: this.editContent.state,
+	                        roleDesc: this.editContent.roleDesc
+	                    };
+	                    this.upRole(param)
+	                        .then(res => {
+	                            this.isEdit = false;
+	                            this.param.roleId = '';
+	                            this.query();
+	                        });
+	                } else {
+	                    this.$Message.error('表单验证失败!');
+	                }
+	            });
+	        }
+	    }
+
+};
 </script>
