@@ -61,223 +61,223 @@
 <script>
 	import userService from '../../service/userService.js';
 	export default {
-		mixins: [userService],
-		data() {
-			const validatePass = (rule, value, callback) => {
-				if (value === '') {
-					callback(new Error('请输入登陆密码！'));
-				} else {
-					if (this.user.checkPassword !== '') {
-						// 对第二个密码框单独验证
-						this.$refs.formValidate.validateField('checkPassword');
-					}
-					callback();
-				}
-			};
-			const validatePassCheck = (rule, value, callback) => {
-				if (value === '') {
-					callback(new Error('请再次输入密码以确认！'));
-				} else if (value !== this.user.staffPassword) {
-					callback(new Error('两次输入的密码不一致！请重新输入！'));
-				} else {
-					callback();
-				}
-			};
-			return {
-				pageTotal: null,//总条数
-				resultData: [],//列表数据
-				loading: false,//表格加载
-				addUserModal: false,//新增弹窗的modal
-				isNew: false,
-				userRole: [
-					{
-						value: 1,
-						label: '系统管理员'
-					},
-					{
-						value: 2,
-						label: '运维人员'
-					},
-					{
-						value: 3,
-						label: '客服人员'
-					},
-				],
-				params: {
-					staffName: '',
-					staffLoginname: '',
-					staffRoleid: '',
-					page: 1,
-					pagesize: 10
-				},
-				user: {
-					staffName: '',
-					staffLoginname: '',
-					staffPassword: '',
-					checkPassword: '',
-					staffRoleid: null,
-				},
-				ruleValidate: {
-					staffName: [
-						{ required: true, message: '请填写人员名称', trigger: 'blur' }
-					],
-					staffLoginname: [
-						{ required: true, message: '请填写登陆账号', trigger: 'blur' }
-					],
-					staffPassword: [
-						{ required: true, validator: validatePass, trigger: 'blur' }
-					],
-					checkPassword: [
-						{ required: true, validator: validatePassCheck, trigger: 'blur' }
-					],
-					staffRoleid: [
-						{ required: true, message: '请选择用户角色' }
-					],
-				},
-				columns: [
-					{
-						title: '人员名称',
-						key: 'staffName',
-						align: 'center',
-					},
-					{
-						title: '账号',
-						key: 'staffLoginname',
-						align: 'center',
-					},
-					{
-						title: '所属角色',
-						key: 'staffRoleid',
-						align: 'center',
-						render: (h, params) => {
-							const row = params.row;
-							const text = row.staffRoleid === 1 ? '系统管理员' : row.staffRoleid === 2 ? '运维人员' : '客服人员'
-							return h('Button', {
-								props: {
-									type: 'text',
-								},
-								on: {
-									click: () => {
+	    mixins: [userService],
+	    data () {
+	        const validatePass = (rule, value, callback) => {
+	            if (value === '') {
+	                callback(new Error('请输入登陆密码！'));
+	            } else {
+	                if (this.user.checkPassword !== '') {
+	                    // 对第二个密码框单独验证
+	                    this.$refs.formValidate.validateField('checkPassword');
+	                }
+	                callback();
+	            }
+	        };
+	        const validatePassCheck = (rule, value, callback) => {
+	            if (value === '') {
+	                callback(new Error('请再次输入密码以确认！'));
+	            } else if (value !== this.user.staffPassword) {
+	                callback(new Error('两次输入的密码不一致！请重新输入！'));
+	            } else {
+	                callback();
+	            }
+	        };
+	        return {
+	            pageTotal: null, // 总条数
+	            resultData: [], // 列表数据
+	            loading: false, // 表格加载
+	            addUserModal: false, // 新增弹窗的modal
+	            isNew: false,
+	            userRole: [
+	                {
+	                    value: 1,
+	                    label: '系统管理员'
+	                },
+	                {
+	                    value: 2,
+	                    label: '运维人员'
+	                },
+	                {
+	                    value: 3,
+	                    label: '客服人员'
+	                }
+	            ],
+	            params: {
+	                staffName: '',
+	                staffLoginname: '',
+	                staffRoleid: '',
+	                page: 1,
+	                pagesize: 10
+	            },
+	            user: {
+	                staffName: '',
+	                staffLoginname: '',
+	                staffPassword: '',
+	                checkPassword: '',
+	                staffRoleid: null
+	            },
+	            ruleValidate: {
+	                staffName: [
+	                    { required: true, message: '请填写人员名称', trigger: 'blur' }
+	                ],
+	                staffLoginname: [
+	                    { required: true, message: '请填写登陆账号', trigger: 'blur' }
+	                ],
+	                staffPassword: [
+	                    { required: true, validator: validatePass, trigger: 'blur' }
+	                ],
+	                checkPassword: [
+	                    { required: true, validator: validatePassCheck, trigger: 'blur' }
+	                ],
+	                staffRoleid: [
+	                    { required: true, message: '请选择用户角色' }
+	                ]
+	            },
+	            columns: [
+	                {
+	                    title: '人员名称',
+	                    key: 'staffName',
+	                    align: 'center'
+	                },
+	                {
+	                    title: '账号',
+	                    key: 'staffLoginname',
+	                    align: 'center'
+	                },
+	                {
+	                    title: '所属角色',
+	                    key: 'staffRoleid',
+	                    align: 'center',
+	                    render: (h, params) => {
+	                        const row = params.row;
+	                        const text = row.staffRoleid === 1 ? '系统管理员' : row.staffRoleid === 2 ? '运维人员' : '客服人员';
+	                        return h('Button', {
+	                            props: {
+	                                type: 'text'
+	                            },
+	                            on: {
+	                                click: () => {
 
-									}
-								}
-							}, text);
-						},
-					},
-					{
-						title: '状态',
-						key: 'staffState',
-						align: 'center',
-						sortable: true,
-						render: (h, params) => {
-							const row = params.row;
-							const type = row.staffState == 0 ? 'error' : 'primary';
-							const text = row.staffState == 0 ? '封禁' : '正常'
-							return h('Button', {
-								props: {
-									type: type,
-									size: 'small'
-								},
-								on: {
-									click: () => {
-										this.updateState(params.row.staffState == 0 ? 1 : 0, params.row.staffId)
-									}
-								}
-							}, text);
-						},
-					},
-					{
-						title: '操作',
-						key: 'action',
-						align: 'center',
-						render: (h, params) => {
-							return h('div', [
-								h('Button', {
-									props: {
-										type: 'primary',
-										size: 'small'
-									},
-									style: {
-										marginRight: '5px'
-									},
-									on: {
-										click: () => {
-											this.getOneUser(params.row.staffId)
-										}
-									}
-								}, '修改人员信息'),
-							]);
-						}
-					}
-				],
-			}
-		},
-		beforeMount() {
-			this.loading = true;
-			this.getDataList()
-		},
-		methods: {
-			getDataList() {
-				this.fetchList(this.params).then(res => {
-					this.resultData = res.list
-					this.pageTotal = Number(res.total)
-					this.loading = false
-				})
-			},
-			getOneUser(id) {
-				this.isNew = false
-				var param = {
-					staffId: id
-				}
-				this.getOneUserAction(param).then(res => {
-					this.user = res.list[0]
-					this.addUserModal = true
-				})
-			},
-			addUserModalAction() {
-				this.isNew = true
-				this.addUserModal = true;
-				this.handleReset('formValidate')
-			},
-			handleReset(name) {
-				this.$refs[name].resetFields();
-			},
-			changePage(pageNum) {
-				this.loading = true
-				this.params.page = pageNum
-				this.getDataList()
-			},
-			updateState(state, id) {
-				var param = {
-					staffId: id,
-					staffState:state
-				}
-				this.updateStateAction(param).then(res => {
-					this.getDataList(this.params)
-				})
-			},
-			handleAddUser(name) {
-				this.$refs[name].validate((valid) => {
-					if (valid) {
-						this.$Message.success('验证成功!');
-						if (this.isNew) {
-							this.addUserAction(this.user).then(res => {
-								this.addUserModal = false
-								this.getDataList(this.params)
-								this.handleReset('formValidate')
-							})
-						} else {
-							this.updateUserAction(this.user).then(res => {
-								this.addUserModal = false
-								this.getDataList(this.params)
-								this.handleReset('formValidate')
-							})
-						}
-					} else {
-						this.$Message.error('表单验证失败!');
-					}
-				})
-			}
-		}
-	}
+	                                }
+	                            }
+	                        }, text);
+	                    }
+	                },
+	                {
+	                    title: '状态',
+	                    key: 'staffState',
+	                    align: 'center',
+	                    sortable: true,
+	                    render: (h, params) => {
+	                        const row = params.row;
+	                        const type = row.staffState == 0 ? 'error' : 'primary';
+	                        const text = row.staffState == 0 ? '封禁' : '正常';
+	                        return h('Button', {
+	                            props: {
+	                                type: type,
+	                                size: 'small'
+	                            },
+	                            on: {
+	                                click: () => {
+	                                    this.updateState(params.row.staffState == 0 ? 1 : 0, params.row.staffId);
+	                                }
+	                            }
+	                        }, text);
+	                    }
+	                },
+	                {
+	                    title: '操作',
+	                    key: 'action',
+	                    align: 'center',
+	                    render: (h, params) => {
+	                        return h('div', [
+	                            h('Button', {
+	                                props: {
+	                                    type: 'primary',
+	                                    size: 'small'
+	                                },
+	                                style: {
+	                                    marginRight: '5px'
+	                                },
+	                                on: {
+	                                    click: () => {
+	                                        this.getOneUser(params.row.staffId);
+	                                    }
+	                                }
+	                            }, '修改人员信息')
+	                        ]);
+	                    }
+	                }
+	            ]
+	        };
+	    },
+	    beforeMount () {
+	        this.loading = true;
+	        this.getDataList();
+	    },
+	    methods: {
+	        getDataList () {
+	            this.fetchList(this.params).then(res => {
+	                this.resultData = res.list;
+	                this.pageTotal = Number(res.total);
+	                this.loading = false;
+	            });
+	        },
+	        getOneUser (id) {
+	            this.isNew = false;
+	            var param = {
+	                staffId: id
+	            };
+	            this.getOneUserAction(param).then(res => {
+	                this.user = res.list[0];
+	                this.addUserModal = true;
+	            });
+	        },
+	        addUserModalAction () {
+	            this.isNew = true;
+	            this.addUserModal = true;
+	            this.handleReset('formValidate');
+	        },
+	        handleReset (name) {
+	            this.$refs[name].resetFields();
+	        },
+	        changePage (pageNum) {
+	            this.loading = true;
+	            this.params.page = pageNum;
+	            this.getDataList();
+	        },
+	        updateState (state, id) {
+	            var param = {
+	                staffId: id,
+	                staffState: state
+	            };
+	            this.updateStateAction(param).then(res => {
+	                this.getDataList(this.params);
+	            });
+	        },
+	        handleAddUser (name) {
+	            this.$refs[name].validate((valid) => {
+	                if (valid) {
+	                    this.$Message.success('验证成功!');
+	                    if (this.isNew) {
+	                        this.addUserAction(this.user).then(res => {
+	                            this.addUserModal = false;
+	                            this.getDataList(this.params);
+	                            this.handleReset('formValidate');
+	                        });
+	                    } else {
+	                        this.updateUserAction(this.user).then(res => {
+	                            this.addUserModal = false;
+	                            this.getDataList(this.params);
+	                            this.handleReset('formValidate');
+	                        });
+	                    }
+	                } else {
+	                    this.$Message.error('表单验证失败!');
+	                }
+	            });
+	        }
+	    }
+	};
 </script>

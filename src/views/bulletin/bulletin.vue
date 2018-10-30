@@ -46,205 +46,205 @@
 <script>
 	import bulletin from '../../service/bulletinService.js';
 	export default {
-		mixins: [bulletin],
-		data() {
-			return {
-				params: {
-					noticeName: '',
-					page: 1,
-					pagesize: 10
-				},
-				bulletin: {
-					noticeName: '',
-					noticeState: '',
-					noticeContent: '',
-				},
-				isState: [
-					{
-						value: 1,
-						label: '发布'
-					},
-					{
-						value: 0,
-						label: '不发布'
-					},
-				],
-				ruleValidate: {
-					noticeName: [
-						{ required: true, message: '请填写公告名称', trigger: 'blur' }
-					],
-					noticeContent: [
-						{ required: true, message: '请填写公告内容', trigger: 'blur' }
-					],
-					noticeState: [
-						{ required: true, message: '请选择是否发布' }
-					],
-				},
-				addBulletinModal: false,
-				resultData: [],
-				pageTotal: null,
-				loading: false,
-				columns: [
-					{
-						title: 'ID',
-						key: 'noticeId',
-						align: 'center',
-					},
-					{
-						title: '公告名称',
-						key: 'noticeName',
-						align: 'center',
-					},
-					{
-						title: '发布时间',
-						key: 'noticeCreatetime',
-						align: 'center',
-					},
-					{
-						title: '浏览次数',
-						key: 'noticeCount',
-						align: 'center',
-					},
-					{
-						title: '公告详情',
-						key: 'noticeContent',
-						align: 'center',
-						ellipsis:'true',
-					},
-					{
-						title: '发布状态',
-						key: 'noticeState',
-						align: 'center',
-						sortable: true,
-						render: (h, params) => {
-							const row = params.row;
-							const type = row.noticeState == 0 ? 'error' : 'primary';
-							const text = row.noticeState == 0 ? '未发布' : '发布'
-							return h('Button', {
-								props: {
-									type: type,
-									size: 'small'
-								},
-								on: {
-									click: () => {
-										this.updateState(params.row.noticeState == 0 ? 1 : 0, params.row.noticeId)
-									}
-								}
-							}, text);
-						},
-					},
-					{
-						title: '操作',
-						key: 'action',
-						align: 'center',
-						render: (h, params) => {
-							return h('div', [
-								h('Poptip', {
-									props: {
-										confirm: true,
-										title: '您确定要删除这条数据吗?',
-										transfer: true
-									},
-									on: {
-										'on-ok': () => {
-											this.handleRemove(params.row.noticeId)
-										}
-									}
-								}, [
-										h('Button', {
-											style: {
-												marginRight: '5px'
-											},
-											props: {
-												size: 'small',
-												type: 'error',
-												placement: 'top'
-											}
-										}, '删除')
-									]),
-								h('Button', {
-									style: {
-										marginRight: '5px'
-									},
-									props: {
-										size: 'small',
-										type: 'success',
-									},
-									on: {
-										click: () => {
-											this.checkDetail(params.row.noticeContent)
-										}
-									}
-								}, '查看')
-							]);
-						}
-					}
-				],
-			}
-		},
-		beforeMount() {
-			this.loading = true;
-			this.getDataList()
-		},
-		methods: {
-			getDataList() {
-				this.fetchList(this.params).then(res => {
-					this.resultData = res.list
-					this.pageTotal = Number(res.total)
-					this.loading = false
-				})
-			},
-			changePage(pageNum) {
-				this.loading = true
-				this.params.page = pageNum
-				this.getDataList()
-			},
-			handleReset(name) {
-				this.$refs[name].resetFields();
-			},
-			addUserModalAction() {
-				this.isNew = true
-				this.addBulletinModal = true;
-				this.handleReset('formValidate')
-			},
-			handleAddBulletin(name) {
-				this.$refs[name].validate((valid) => {
-					if (valid) {
-						this.$Message.success('验证成功!');
-						this.addBulletinAction(this.bulletin).then(res => {
-							this.addBulletinModal = false
-							this.getDataList(this.params)
-							this.handleReset('formValidate')
-						})
-					} else {
-						this.$Message.error('表单验证失败!');
-					}
-				})
-			},
-			handleRemove(id) {
-				this.handleDeleteBulletin(id).then(() => {
-					this.getDataList()
-				})
-			},
-			updateState(state, id) {
-				var param = {
-					noticeId: id,
-					noticeState:state
-				}
-				this.updateStateAction(param).then(res => {
-					this.getDataList(this.params)
-				})
-			},
-			checkDetail(detail) {
-                this.$Modal.info({
-					title: '公告详情',
-					width:600,
-					closable:true,
-                    content: '<p>'+detail+'</p>',
-                    okText: '确定',
-                    cancelText: '取消'
-                });
-			}
-		}
-	}
+	    mixins: [bulletin],
+	    data () {
+	        return {
+	            params: {
+	                noticeName: '',
+	                page: 1,
+	                pagesize: 10
+	            },
+	            bulletin: {
+	                noticeName: '',
+	                noticeState: '',
+	                noticeContent: ''
+	            },
+	            isState: [
+	                {
+	                    value: 1,
+	                    label: '发布'
+	                },
+	                {
+	                    value: 0,
+	                    label: '不发布'
+	                }
+	            ],
+	            ruleValidate: {
+	                noticeName: [
+	                    { required: true, message: '请填写公告名称', trigger: 'blur' }
+	                ],
+	                noticeContent: [
+	                    { required: true, message: '请填写公告内容', trigger: 'blur' }
+	                ],
+	                noticeState: [
+	                    { required: true, message: '请选择是否发布' }
+	                ]
+	            },
+	            addBulletinModal: false,
+	            resultData: [],
+	            pageTotal: null,
+	            loading: false,
+	            columns: [
+	                {
+	                    title: 'ID',
+	                    key: 'noticeId',
+	                    align: 'center'
+	                },
+	                {
+	                    title: '公告名称',
+	                    key: 'noticeName',
+	                    align: 'center'
+	                },
+	                {
+	                    title: '发布时间',
+	                    key: 'noticeCreatetime',
+	                    align: 'center'
+	                },
+	                {
+	                    title: '浏览次数',
+	                    key: 'noticeCount',
+	                    align: 'center'
+	                },
+	                {
+	                    title: '公告详情',
+	                    key: 'noticeContent',
+	                    align: 'center',
+	                    ellipsis: 'true'
+	                },
+	                {
+	                    title: '发布状态',
+	                    key: 'noticeState',
+	                    align: 'center',
+	                    sortable: true,
+	                    render: (h, params) => {
+	                        const row = params.row;
+	                        const type = row.noticeState == 0 ? 'error' : 'primary';
+	                        const text = row.noticeState == 0 ? '未发布' : '发布';
+	                        return h('Button', {
+	                            props: {
+	                                type: type,
+	                                size: 'small'
+	                            },
+	                            on: {
+	                                click: () => {
+	                                    this.updateState(params.row.noticeState == 0 ? 1 : 0, params.row.noticeId);
+	                                }
+	                            }
+	                        }, text);
+	                    }
+	                },
+	                {
+	                    title: '操作',
+	                    key: 'action',
+	                    align: 'center',
+	                    render: (h, params) => {
+	                        return h('div', [
+	                            h('Poptip', {
+	                                props: {
+	                                    confirm: true,
+	                                    title: '您确定要删除这条数据吗?',
+	                                    transfer: true
+	                                },
+	                                on: {
+	                                    'on-ok': () => {
+	                                        this.handleRemove(params.row.noticeId);
+	                                    }
+	                                }
+	                            }, [
+	                                h('Button', {
+	                                    style: {
+	                                        marginRight: '5px'
+	                                    },
+	                                    props: {
+	                                        size: 'small',
+	                                        type: 'error',
+	                                        placement: 'top'
+	                                    }
+	                                }, '删除')
+	                            ]),
+	                            h('Button', {
+	                                style: {
+	                                    marginRight: '5px'
+	                                },
+	                                props: {
+	                                    size: 'small',
+	                                    type: 'success'
+	                                },
+	                                on: {
+	                                    click: () => {
+	                                        this.checkDetail(params.row.noticeContent);
+	                                    }
+	                                }
+	                            }, '查看')
+	                        ]);
+	                    }
+	                }
+	            ]
+	        };
+	    },
+	    beforeMount () {
+	        this.loading = true;
+	        this.getDataList();
+	    },
+	    methods: {
+	        getDataList () {
+	            this.fetchList(this.params).then(res => {
+	                this.resultData = res.list;
+	                this.pageTotal = Number(res.total);
+	                this.loading = false;
+	            });
+	        },
+	        changePage (pageNum) {
+	            this.loading = true;
+	            this.params.page = pageNum;
+	            this.getDataList();
+	        },
+	        handleReset (name) {
+	            this.$refs[name].resetFields();
+	        },
+	        addUserModalAction () {
+	            this.isNew = true;
+	            this.addBulletinModal = true;
+	            this.handleReset('formValidate');
+	        },
+	        handleAddBulletin (name) {
+	            this.$refs[name].validate((valid) => {
+	                if (valid) {
+	                    this.$Message.success('验证成功!');
+	                    this.addBulletinAction(this.bulletin).then(res => {
+	                        this.addBulletinModal = false;
+	                        this.getDataList(this.params);
+	                        this.handleReset('formValidate');
+	                    });
+	                } else {
+	                    this.$Message.error('表单验证失败!');
+	                }
+	            });
+	        },
+	        handleRemove (id) {
+	            this.handleDeleteBulletin(id).then(() => {
+	                this.getDataList();
+	            });
+	        },
+	        updateState (state, id) {
+	            var param = {
+	                noticeId: id,
+	                noticeState: state
+	            };
+	            this.updateStateAction(param).then(res => {
+	                this.getDataList(this.params);
+	            });
+	        },
+	        checkDetail (detail) {
+            this.$Modal.info({
+	                title: '公告详情',
+	                width: 600,
+	                closable: true,
+                content: '<p>' + detail + '</p>',
+                okText: '确定',
+                cancelText: '取消'
+            });
+	        }
+	    }
+	};
 </script>

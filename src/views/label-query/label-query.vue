@@ -62,25 +62,25 @@
 </template>
 <script>
 	export default {
-		data() {
-			return {
-				cityList: [
-					{
-						value: 'New York',
-						label: '内容标签'
-					},
-					{
-						value: 'London',
-						label: 'APP偏好标签'
-					},
-					{
-						value: 'Sydney',
-						label: '兴趣标签'
-					},
-				],
-				model1: '',
-				phone: '',
-			}
-		}
-	}
+	    data () {
+	        return {
+	            cityList: [
+	                {
+	                    value: 'New York',
+	                    label: '内容标签'
+	                },
+	                {
+	                    value: 'London',
+	                    label: 'APP偏好标签'
+	                },
+	                {
+	                    value: 'Sydney',
+	                    label: '兴趣标签'
+	                }
+	            ],
+	            model1: '',
+	            phone: ''
+	        };
+	    }
+	};
 </script>
