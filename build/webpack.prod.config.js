@@ -18,7 +18,7 @@ fs.open('./build/env.js', 'w', function(err, fd) {
 
 module.exports = merge(webpackBaseConfig, {
     output: {
-        publicPath: 'https://iview.github.io/iview-admin/dist/',  // 修改 https://iv...admin 这部分为你的服务器域名 
+        publicPath: 'http://10.162.233.222:8080/dist/',  // 修改 https://iv...admin 这部分为你的服务器域名
         filename: '[name].[hash].js',
         chunkFilename: '[name].[hash].chunk.js'
     },
@@ -57,6 +57,11 @@ module.exports = merge(webpackBaseConfig, {
         // }),
         new CopyWebpackPlugin([
             {
+                from: path.resolve(__dirname, '../static'),
+                to: 'static',
+                ignore: ['.*']
+            },
+            {
                 from: 'td_icon.ico'
             },
             {
@@ -72,7 +77,7 @@ module.exports = merge(webpackBaseConfig, {
             ]
         }),
         new HtmlWebpackPlugin({
-            title: 'iView admin v' + package.version,
+            title: '联通-标签可视化',
             favicon: './td_icon.ico',
             filename: '../index.html',
             template: '!!ejs-loader!./src/template/index.ejs',
