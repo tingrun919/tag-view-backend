@@ -26,6 +26,12 @@ export default {
 			return Util.get('staff/updateSysStaffToIsEffective', params).then(res => {
 				return Util.result(res.data, '修改')
 			})
+		},
+		// 查询角色
+		selRole(params){
+			return Util.get('staff/selRole',params).then(res => {
+				return Util.result(res.data, '隐藏')
+			})
 		}
 	}
 }

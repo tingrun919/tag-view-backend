@@ -8,8 +8,10 @@
 			<Card>
 				<span>人员名称</span>
 				<Input v-model="params.staffName" placeholder="请输入人员名称" clearable style="width: 200px"></Input>
-				<span class="margin-left-10">人员账号</span>
-				<Input v-model="params.staffLoginname" placeholder="请输入人员账号" clearable style="width: 200px"></Input>
+				<span class="margin-left-10">状态</span>
+				<Select v-model="params.staffState" clearable style="width:200px">
+					<Option v-for="item in userStatus" :value="item.value" :key="item.value">{{ item.label }}</Option>
+				</Select>
 				<span class="margin-left-10">人员角色</span>
 				<Select v-model="params.staffRoleid" clearable style="width:200px">
 					<Option v-for="item in userRole" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -89,24 +91,21 @@
 				loading: false,//表格加载
 				addUserModal: false,//新增弹窗的modal
 				isNew: false,
-				userRole: [
+				userStatus:[
+					{
+						value: 0,
+						label: '封禁'
+					},
 					{
 						value: 1,
-						label: '系统管理员'
-					},
-					{
-						value: 2,
-						label: '运维人员'
-					},
-					{
-						value: 3,
-						label: '客服人员'
+						label: '正常'
 					},
 				],
+				userRole: [],
 				params: {
 					staffName: '',
-					staffLoginname: '',
 					staffRoleid: '',
+					staffState:"",
 					page: 1,
 					pagesize: 10
 				},
@@ -206,6 +205,29 @@
 										}
 									}
 								}, '修改人员信息'),
+								h('Poptip', {
+									props: {
+										confirm: true,
+										title: '您确定要重置该用户的密码吗?',
+										transfer: true
+									},
+									on: {
+										'on-ok': () => {
+											this.updatePassword(params.row.staffId)
+										}
+									}
+								}, [
+										h('Button', {
+											style: {
+												marginRight: '5px'
+											},
+											props: {
+												size: 'small',
+												type: 'error',
+												placement: 'top'
+											}
+										}, '重制密码')
+									]),
 							]);
 						}
 					}
@@ -214,9 +236,24 @@
 		},
 		beforeMount() {
 			this.loading = true;
+			this.userRole=[]
 			this.getDataList()
+			var params={
+				page:1,
+				pagesize:1000
+			}
+			this.selRole(params).then(res => {
+				console.log(res)
+				res.list.forEach(element => {
+					this.userRole.push({
+						value: element.roleId,
+						label:element.roleName
+					})
+				});
+			})
 		},
 		methods: {
+			// 获取用户列表
 			getDataList() {
 				this.fetchList(this.params).then(res => {
 					this.resultData = res.list
@@ -224,6 +261,16 @@
 					this.loading = false
 				})
 			},
+			// 重置用户密码
+			updatePassword(id){
+				var params = {
+					staffId:id
+				}
+				this.fetchList(this.params).then(res => {
+					
+				})
+			},
+			// 获取单个用户信息
 			getOneUser(id) {
 				this.isNew = false
 				var param = {
@@ -234,6 +281,7 @@
 					this.addUserModal = true
 				})
 			},
+			// 添加用户
 			addUserModalAction() {
 				this.isNew = true
 				this.addUserModal = true;
@@ -247,6 +295,7 @@
 				this.params.page = pageNum
 				this.getDataList()
 			},
+			//修改用户权限 
 			updateState(state, id) {
 				var param = {
 					staffId: id,
@@ -256,6 +305,7 @@
 					this.getDataList(this.params)
 				})
 			},
+			// 表单验证
 			handleAddUser(name) {
 				this.$refs[name].validate((valid) => {
 					if (valid) {

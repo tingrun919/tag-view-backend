@@ -24,6 +24,8 @@ export const otherRouter = {
     component: Main,
     children: [
         { path: 'home', title: {i18n: 'home'}, name: 'home_index', component: () => import('@/views/home/home.vue') },
+        { path: 'home/bulletinList', title: '公告列表', name: 'bulletin_index', component: () => import('@/views/home/bulletinList/bulletinList.vue') },
+        { path: 'home/bulletinList/:id', title: '公告详情', name: 'bulletinDetail_index', component: () => import('@/views/home/bulletinDetails/bulletinDetails.vue') },
     ]
 };
 

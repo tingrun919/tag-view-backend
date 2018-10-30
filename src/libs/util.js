@@ -17,7 +17,7 @@ const ajaxUrl = env === 'development'
 	// ? 'http://39.107.78.100:8080/biaoqian_admin/'
 	: env === 'production'
 		? 'http://39.107.78.100:8080/biaoqian_admin/'
-		: 'http://39.107.78.100:8080/biaoqian_admin/';
+		: 'http://192.168.10.196:8080/biaoqian_admin/';
 
 axios.defaults.baseURL = ajaxUrl
 // axios.defaults.headers = { 'X-Requested-With': 'XMLHttpRequest' }
@@ -51,8 +51,11 @@ util.post = function (url, params) {
 util.result = function (res, arg) {
 	let result = '成功';
 	if (res.code == 100000) {
-		result = arg + result
-		Message.success(result);
+		if(arg !="隐藏"){
+			result = arg + result
+			Message.success(result);
+		}
+		
 	} else {
 		Message.error(res.message);
 	}
