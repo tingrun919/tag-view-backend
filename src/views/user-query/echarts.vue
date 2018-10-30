@@ -46,6 +46,12 @@
                 }
             }
         },
+        watch: {
+            opinionData () {
+                console.log(this.tooltipFormatter,'tooltipFormatter')
+                this.drawPie('myChart');
+            }
+        },
         data () {
             return {
                 //
@@ -74,11 +80,25 @@
                     },
                     tooltip: {
                         trigger: 'item',
-                        formatter: '{a} <br/> ' + this.tooltipFormatter + ':{c}'
+                        // formatter: '{a} <br/> ' + this.tooltipFormatter + ':{c}'
+                        formatter: (params, ticket, callback) => {
+                            let res = '';
+                            if (params.seriesName === '次数统计') {
+                                res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + params.value + '次';
+                            } else if (params.seriesName === '时长统计') {
+                                res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + (params.value / 60).toFixed(2) + '分钟';
+                            } else {
+                                res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + (params.value / 1024).toFixed(2) + 'MB';
+                            }
+                            return res;
+                        }
                     },
                     legend: {
+                        type: 'scroll',
+                        orient: 'vertical',
+                        right: 0,
+                        top: 30,
                         bottom: 20,
-                        left: 'center',
                         data: this.opinion
                         // 扇形区域名称
                     },

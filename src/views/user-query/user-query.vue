@@ -10,12 +10,13 @@
                     <span>手机号码查询</span>
                     <Input v-model="phone" placeholder="请输入标题名称" clearable style="width: 200px"></Input>
                     <span class="margin-left-10">选择账期</span>
-                    <DatePicker type="month" placeholder="请选择账期" style="width: 200px" v-model="date"></DatePicker>
+                    <DatePicker type="month" placeholder="请选择账期" style="width: 200px" v-model="date" @on-change="changeDate"></DatePicker>
                     <Button class="margin-left-10" type="primary" icon="search" @click="query">查询</Button>
                 </Card>
             </Col>
         </Row>
-        <div >
+        <div>
+            <Spin size="large" fix v-if="loading"></Spin>
             <Row class="margin-top-10" v-if="result.N02">
                 <Col>
                     <Card>
@@ -31,10 +32,10 @@
                                             <p slot="title" style="text-align: center;font-size: 16px;">{{children.n020007}}</p>
                                             <div style="text-align: center;">
                                                 <p style="font-weight: bold;">时长：{{ (children.n020002/3600).toFixed(2) }} H</p>
-                                                <div class="custom-tag margin-top-10" v-bind:style="[{backgroundColor:'#2d8cf0'}]">
+                                                <div class="custom-tag margin-top-10" v-bind:style="[{backgroundColor:'#2d8cf0'}]" v-if="children.secList.length>0">
                                                     <span>{{children.secList[0].n020007}}</span>
                                                 </div>
-                                                <div class="custom-tag margin-top-10" v-bind:style="[{backgroundColor:'#19be6b'}]">
+                                                <div class="custom-tag margin-top-10" v-bind:style="[{backgroundColor:'#19be6b'}]"v-if="children.secList.length>1">
                                                     <span>{{children.secList[1].n020007}}</span>
                                                 </div>
                                                 <p class="margin-top-10 custom-p" @click="all(children)">查看全部></p>
@@ -88,18 +89,18 @@
                                 <Row type="flex" justify="start">
                                     <Col span="3" style="margin: 0 2%" v-for="(children,index) in habbit" :key="index">
                                         <Card>
-                                            <p slot="title" style="text-align: center;font-size: 16px;">{{children.n030002}}</p>
+                                            <p slot="title" style="text-align: center;font-size: 16px;">{{children['n030002']}}</p>
                                             <div style="text-align: center;">
                                                 <p style="font-weight: bold;">评分等级：{{children.n030005}}</p>
-                                                <div class="custom-tag margin-top-10" v-bind:style="[{backgroundColor:'#2d8cf0'}]">
-                                    <span>
-                                        {{children.secList[0].n030002}}
-                                    </span>
+                                                <div class="custom-tag margin-top-10" v-bind:style="[{backgroundColor:'#2d8cf0'}]" v-if="children.secList.length>0">
+                                                    <span >
+                                                        {{children.secList[0].n030002}}
+                                                    </span>
                                                 </div>
-                                                <div class="custom-tag margin-top-10" v-bind:style="[{backgroundColor:'#19be6b'}]">
-                                    <span>
-                                        {{children.secList[1].n030002}}
-                                    </span>
+                                                <div class="custom-tag margin-top-10" v-bind:style="[{backgroundColor:'#19be6b'}]" v-if="children.secList.length>1">
+                                                    <span>
+                                                        {{children.secList[1].n030002}}
+                                                    </span>
                                                 </div>
                                                 <p class="margin-top-10 custom-p" @click="allHabbit(children)">查看全部></p>
                                             </div>
@@ -111,7 +112,6 @@
                     </Card>
                 </Col>
             </Row>
-        </div>
             <Modal v-model="modalInternet" width="60%">
                 <p slot="header" style="color:#2d8cf0;font-size: 20px;height: auto;">
                     <Icon type="information-circled"></Icon>
@@ -165,17 +165,35 @@
                     <Icon type="information-circled"></Icon>
                     <span style="margin-right: 10px">App明细日数据查询</span>
                 </p>
-            <Echarts :echartStyle="styles"
-                           :tooltipFormatter="b"
-                           :opinion="dataLength"
-                           :seriesName="d"
-                           :opinionData="dataList"
-                           v-on:currentEchartData="getEchartData"
-            ></Echarts>
+                    <Row>
+                        <span>账期</span>
+                        <DatePicker type="date" placeholder="请选择账期" style="width: 200px" v-model="dates"></DatePicker>
+                        <span>检索类型</span>
+                        <Select v-model="select" style="width:200px" clearable>
+                            <Option v-for="item in list" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                        </Select>
+                        <Button @click="searchDate"> 搜索</Button>
+                    </Row>
+                <Row>
+                    <Echarts :echartStyle="styles"
+                                   :tooltipFormatter="tooltip"
+                                   :opinion="dataLength"
+                                   :seriesName="seriesName"
+                                   :opinionData="dataList"
+                                   v-on:currentEchartData="getEchartData"
+                             ref="eharts"
+                             v-if="dataLength.length > 0"
+                    ></Echarts>
+                    <span v-if="dataLength.length === 0">暂无数据</span>
+                    <Spin size="large" fix v-if="spinShow"></Spin>
+                </Row>
+
+
             <div slot="footer">
             </div>
         </Modal>
         </div>
+    </div>
 </template>
 <script>
     import search from '../../service/userQuery.js';
@@ -190,8 +208,10 @@
         },
         data () {
             return {
+                spinShow: false,
                 phone: '',
                 date: '',
+                dates: '',
                 dots: 'none',
                 arrow: 'always',
                 internet: 0,
@@ -218,14 +238,29 @@
                 pageApp: 1,
                 loading: false,
                 pageHabbit: 1,
-                b: '使用流量',
+                select: 1,
+                tooltip: '',
                 dataLength: [],
-                d: '流量统计',
+                seriesName: '',
                 dataList: [],
                 styles: {
                     height: '500px',
-                    width: '500px'
+                    width: '100%'
                 },
+                list: [
+                    {
+                        value: 1,
+                        label: '流量'
+                    },
+                    {
+                        value: 2,
+                        label: '次数'
+                    },
+                    {
+                        value: 3,
+                        label: '时长'
+                    }
+                ],
                 columns1: [
                     {
                         title: '二级标签',
@@ -312,7 +347,9 @@
         },
         created () {
             this.styles.height = document.documentElement.clientHeight - 44 + 'px';
-            this.query();
+        },
+        updated () {
+            // this.searchDate();
         },
         methods: {
             query () {
@@ -347,12 +384,15 @@
                                 if (res.N03[i]) {
                                     arrHabbit.push(res.N03[i]);
                                 }
-                                this.web = arrInternet;
-                                this.apps = arrApp;
-                                this.habbit = arrHabbit;
                             }
+                            this.web = arrInternet;
+                            this.apps = arrApp;
+                            this.habbit = arrHabbit;
                         });
                 }
+            },
+            changeDate (value) {
+                this.dates = value + '-01';
             },
             change (oldValue, value) {
                 let arrInternet = [];
@@ -390,22 +430,41 @@
                 this.habbitTable = children.secList;
             },
             day () {
+                this.modalDay = true;
+                this.searchDate();
+            },
+            searchDate () {
                 const param = {
-                    phone: '17615403435',
-                    count: '20181001',
-                    type: 3
+                    phone: this.phone,
+                    count: moment(this.dates).format('YYYYMMDD'),
+                    type: this.select
                 };
+                this.spinShow = true;
+                if (param.type === 1) {
+                    this.tooltip = '使用流量';
+                    this.seriesName = '流量统计';
+                } else if (param.type === 2) {
+                    this.tooltip = '使用次数';
+                    this.seriesName = '次数统计';
+                } else {
+                    this.tooltip = '使用时长';
+                    this.seriesName = '时长统计';
+                }
                 this.dayData(param)
                     .then(res => {
-                        this.modalDay = true;
-                        this.dataLength = ['数字'];
-                        this.dataList = [{name: '数字', value: '1'}];
-                        console.log(res.datalist, 'res.datalist');
-                        // console.log(this.dataLength,'this.dataLength')
+                        if (res == '') {
+                            this.spinShow = false;
+                            this.dataLength = [];
+                            this.dataList = [];
+                        } else {
+                            this.spinShow = false;
+                            this.dataLength = res.legend;
+                            this.dataList = res.datalist;
+                        }
                     });
             },
             getEchartData (val) {
-                console.log(val);
+                console.log(val, 'val');
             }
 
         }
