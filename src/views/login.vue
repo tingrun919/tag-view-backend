@@ -40,55 +40,56 @@
 	import Cookies from 'js-cookie';
 	import loginService from '../service/loginService.js';
 	export default {
-		mixins: [loginService],
-		data() {
-			return {
-				loading:false,
-				form: {
-					usercount: '',
-					password: ''
-				},
-				rules: {
-					usercount: [
-						{ required: true, message: '账号不能为空', trigger: 'blur' }
-					],
-					password: [
-						{ required: true, message: '密码不能为空', trigger: 'blur' }
-					]
-				}
-			};
-		},
-		methods: {
-			handleSubmit() {
-				this.loading = true
-				this.$refs.loginForm.validate((valid) => {
-					if (valid) {
-						this.loginAction(this.form).then(result => {
-							this.loading = false
-							if (result) {
-								Cookies.set('user', this.form.usercount);
-								Cookies.set('password', this.form.password);
-								Cookies.set('role',result.staffDesc)
-								this.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
-								//staffRoleid ·1:后台管理员 ·2:运维人员 ·3:客服人员
-								if (result.staffRoleid === 1) {
-									Cookies.set('access', 1);
-								} else if (result.staffRoleid === 2) {
-									Cookies.set('access', 2);
-								} else {
-									Cookies.set('access', 3);
-								}
-								this.$router.push({
-									name: 'home_index'
-								});
-							}
-						})
-					}else{
-						this.loading = false
-					}
-				});
-			}
-		}
+	    mixins: [loginService],
+	    data () {
+	        return {
+	            loading: false,
+	            form: {
+	                usercount: '',
+	                password: ''
+	            },
+	            rules: {
+	                usercount: [
+	                    { required: true, message: '账号不能为空', trigger: 'blur' }
+	                ],
+	                password: [
+	                    { required: true, message: '密码不能为空', trigger: 'blur' }
+	                ]
+	            }
+	        };
+	    },
+	    methods: {
+	        handleSubmit () {
+	            this.loading = true;
+	            this.$refs.loginForm.validate((valid) => {
+	                if (valid) {
+	                    this.loginAction(this.form).then(result => {
+	                        this.loading = false;
+	                        if (result) {
+	                            Cookies.set('user', this.form.usercount);
+	                            Cookies.set('password', this.form.password);
+                            	Cookies.set('role', result.staffDesc);
+	                            this.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
+	                            // staffRoleid ·1:后台管理员 ·2:运维人员 ·3:客服人员
+	                            if (result.staffRoleid === 1) {
+	                                Cookies.set('access', 1);
+	                            } else if (result.staffRoleid === 2) {
+	                                Cookies.set('access', 2);
+	                            } else {
+	                                Cookies.set('access', 3);
+	                            }
+	                            Cookies.set('roleState', result.staffState);
+	                            this.$router.push({
+	                                name: 'home_index'
+	                            });
+	                        }
+	                    });
+	                } else {
+	                    this.loading = false;
+	                }
+	            });
+	        }
+	    }
 	};
 </script>
 
