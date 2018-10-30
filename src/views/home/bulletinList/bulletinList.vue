@@ -1,26 +1,54 @@
 <template>
 	<div>
-		<Table :loading="loading" stripe border :height="height" :columns="columns" :data="resultData"></Table>
-		<div style="margin: 10px;overflow: hidden">
-			<div style="float: right;">
-				<Page :total="pageTotal" :current="params.page" @on-change="changePage"></Page>
-			</div>
-		</div>
+		<Row>
+			<Col>
+			<Card>
+				<span>公告名称</span>
+				<Input v-model="params.noticeName" clearable placeholder="请输入公告名称" clearable style="width: 200px"></Input>
+				<Button @click="getDataList" class="margin-left-10" type="primary" icon="search">查询</Button>
+			</Card>
+			</Col>
+		</Row>
+		<Row>
+			<Card>
+				<Table :loading="loading" stripe border :columns="columns" :data="resultData"></Table>
+				<div style="margin: 10px;overflow: hidden">
+					<div style="float: right;">
+						<Page :total="pageTotal" :current="params.page" @on-change="changePage"></Page>
+					</div>
+				</div>
+			</Card>
+		</Row>
 	</div>
 </template>
-
 <script>
 	import bulletin from '../../../service/bulletinService.js';
 	export default {
 		mixins: [bulletin],
-		name: 'mapDataTable',
 		data() {
 			return {
 				params: {
 					noticeState:1,
+					noticeName: '',
 					page: 1,
 					pagesize: 10
 				},
+				bulletin: {
+					noticeName: '',
+					noticeState: '',
+					noticeContent: '',
+				},
+				isState: [
+					{
+						value: 1,
+						label: '发布'
+					},
+					{
+						value: 0,
+						label: '不发布'
+					},
+				],
+				resultData: [],
 				pageTotal: null,
 				loading: false,
 				columns: [
@@ -31,7 +59,6 @@
 						render: (h, params) => {
 							return h('span', `${params.index + (this.params.page - 1) * this.params.pagesize + 1}`);
 						}
-
 					},
 					{
 						title: '公告名称',
@@ -42,6 +69,7 @@
 						title: '发布时间',
 						key: 'noticeCreatetime',
 						align: 'center',
+						sortable: true,
 					},
 					{
 						title: '浏览次数',
@@ -52,7 +80,6 @@
 						title: '发布状态',
 						key: 'noticeState',
 						align: 'center',
-						sortable: true,
 						render: (h, params) => {
 							const row = params.row;
 							const type = row.noticeState == 0 ? 'error' : 'primary';
@@ -89,12 +116,7 @@
 						}
 					}
 				],
-				resultData: [],
-			};
-		},
-		props: {
-			styleObj: Object,
-			height: String
+			}
 		},
 		beforeMount() {
 			this.loading = true;
@@ -113,9 +135,9 @@
 				this.params.page = pageNum
 				this.getDataList()
 			},
-			checkDetail(id) {
-                this.$router.push(`/home/bulletinList/${id}?type=new`)
+			checkDetail(id){
+				this.$router.push(`/home/bulletinList/${id}?type=new`)
 			}
 		}
-	};
+	}
 </script>

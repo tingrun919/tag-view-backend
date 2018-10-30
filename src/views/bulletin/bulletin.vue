@@ -86,9 +86,12 @@
 				loading: false,
 				columns: [
 					{
-						title: 'ID',
+						title: '序号',
 						key: 'noticeId',
 						align: 'center',
+						render: (h, params) => {
+							return h('span', `${params.index + (this.params.page - 1) * this.params.pagesize + 1}`);
+						}
 					},
 					{
 						title: '公告名称',
@@ -102,14 +105,8 @@
 					},
 					{
 						title: '浏览次数',
-						key: 'noticeCount',
+						key: 'noticeBeizhu',
 						align: 'center',
-					},
-					{
-						title: '公告详情',
-						key: 'noticeContent',
-						align: 'center',
-						ellipsis:'true',
 					},
 					{
 						title: '发布状态',
@@ -172,10 +169,10 @@
 									},
 									on: {
 										click: () => {
-											this.checkDetail(params.row.noticeContent)
+											this.checkDetail(params.row.noticeId)
 										}
 									}
-								}, '查看')
+								}, '编辑')
 							]);
 						}
 					}
@@ -202,10 +199,10 @@
 			handleReset(name) {
 				this.$refs[name].resetFields();
 			},
+			// 新增公告
 			addUserModalAction() {
-				this.isNew = true
-				this.addBulletinModal = true;
-				this.handleReset('formValidate')
+				// 跳转页面
+				this.$router.push(`../home/bulletinList/add?type=add`)
 			},
 			handleAddBulletin(name) {
 				this.$refs[name].validate((valid) => {
@@ -235,15 +232,8 @@
 					this.getDataList(this.params)
 				})
 			},
-			checkDetail(detail) {
-                this.$Modal.info({
-					title: '公告详情',
-					width:600,
-					closable:true,
-                    content: '<p>'+detail+'</p>',
-                    okText: '确定',
-                    cancelText: '取消'
-                });
+			checkDetail(id){
+				this.$router.push(`/home/bulletinList/${id}?type=edit`)
 			}
 		}
 	}

@@ -41,59 +41,37 @@ const app = {
 			// let accessCode = parseInt(Cookies.get('access'));
 			let menuList = [];
 			appRouter.forEach((item, index) => {
-			// 	if (item.access !== undefined) {
-			// 		if (Util.showThisRoute(item.access, accessCode)) {
-			// 			if (item.children.length === 1) {
-			// 				menuList.push(item);
-			// 			} else {
-			// 				let len = menuList.push(item);
-			// 				let childrenArr = [];
-			// 				childrenArr = item.children.filter(child => {
-			// 					if (child.access !== undefined) {
-			// 						if (child.access === accessCode) {
-			// 							return child;
-			// 						}
-			// 					} else {
-			// 						return child;
-			// 					}
-			// 				});
-			// 				menuList[len - 1].children = childrenArr;
-			// 			}
-			// 		}
-			// 	} else {
-					if (item.children.length === 1) {
-						let role = Cookies.get('role').split(',')
-						if (role.length > 0) {
-							for (let i = 0; i < role.length; i++) {
-								console.log(role[i] === index)
-								// console.log(role[i] === index)
-								if (role[i] === index) {
-									item.access = role
-									menuList.push(item);
-								}
+				if (item.children.length === 1) {
+					let role = Cookies.get('role').split(',')
+					if (role.length > 0) {
+						for (let i = 0; i < role.length; i++) {
+							if (role[i] == (index+1)){
+								item.access = role
+								menuList.push(item);
 							}
 						}
-						
-					} else {
-						let len = menuList.push(item);
-						let childrenArr = [];
-						childrenArr = item.children.filter(child => {
-							if (child.access !== undefined) {
-								if (Util.showThisRoute(child.access, accessCode)) {
-									return child;
-								}
-							} else {
+					}
+
+				} else {
+					let len = menuList.push(item);
+					let childrenArr = [];
+					childrenArr = item.children.filter(child => {
+						if (child.access !== undefined) {
+							if (Util.showThisRoute(child.access, accessCode)) {
 								return child;
 							}
-						});
-						if (childrenArr === undefined || childrenArr.length === 0) {
-							menuList.splice(len - 1, 1);
 						} else {
-							let handledItem = JSON.parse(JSON.stringify(menuList[len - 1]));
-							handledItem.children = childrenArr;
-							menuList.splice(len - 1, 1, handledItem);
+							return child;
 						}
-			// 		}
+					});
+					if (childrenArr === undefined || childrenArr.length === 0) {
+						menuList.splice(len - 1, 1);
+					} else {
+						let handledItem = JSON.parse(JSON.stringify(menuList[len - 1]));
+						handledItem.children = childrenArr;
+						menuList.splice(len - 1, 1, handledItem);
+					}
+					// 		}
 				}
 			});
 			state.menuList = menuList;
