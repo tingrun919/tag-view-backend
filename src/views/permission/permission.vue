@@ -4,10 +4,9 @@
 			<Col>
 				<Card>
 					<span>角色名称</span>
-					<Input v-model="role" placeholder="请输入角色名称" clearable style="width: 200px"/>
-
-					<Button class="margin-left-10" type="primary" icon="search" @click="search">查询</Button>
-					<Button class="margin-left-10" type="primary" icon="search" @click="isAdd = true">新增</Button>
+					<Input v-model="role" placeholder="请输入角色名称" clearable style="width: 200px;margin-right: 10px"/>
+					<Button class="margin-left-10" type="primary" icon="search" @click="search" style="margin-right: 10px">查询</Button>
+					<Button class="margin-left-10" type="success" icon="plus" @click="isAdd = true" style="margin-right: 10px">新增</Button>
 				</Card>
 			</Col>
 		</Row>
@@ -54,7 +53,7 @@
 				<FormItem label="角色描述" prop="dec">
 					<Input v-model="user.dec" placeholder="请输入角色描述"></Input>
 				</FormItem>
-				<FormItem>
+				<FormItem style="text-align: center;margin-left: -80px">
 					<Button type="primary" @click="addOk('formValidate')">保存</Button>
 					<Button type="ghost" @click="addCancal('formValidate')" style="margin-left: 8px">取消</Button>
 				</FormItem>
@@ -80,7 +79,7 @@
 				<FormItem label="角色描述" prop="roleDesc">
 					<Input v-model="editContent.roleDesc" placeholder="请输入角色描述"></Input>
 				</FormItem>
-				<FormItem>
+				<FormItem  style="text-align: center;margin-left: -80px">
 					<Button type="primary" @click="editOk('editForm')">保存</Button>
 					<Button type="ghost" @click="isEdit = false" style="margin-left: 8px">取消</Button>
 				</FormItem>
@@ -145,6 +144,8 @@ export default {
 	                {
 	                    title: '序号',
 	                    key: 'index',
+                        align: 'center',
+                        width: 100,
 	                    render: (h, params) => {
 	                        return h('span', `${params.index + (this.param.page - 1) * this.param.pagesize + 1}`);
 	                    }
@@ -188,7 +189,7 @@ export default {
                                 },
                                 props: {
                                     size: 'small',
-                                    type: 'warning'
+                                    type: 'primary'
                                 },
                                 on: {
                                     click: () => {

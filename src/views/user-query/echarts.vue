@@ -48,7 +48,6 @@
         },
         watch: {
             opinionData () {
-                console.log(this.tooltipFormatter,'tooltipFormatter')
                 this.drawPie('myChart');
             }
         },
@@ -86,9 +85,9 @@
                             if (params.seriesName === '次数统计') {
                                 res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + params.value + '次';
                             } else if (params.seriesName === '时长统计') {
-                                res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + (params.value / 60).toFixed(2) + '分钟';
+                                res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + params.value + '分钟';
                             } else {
-                                res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + (params.value / 1024).toFixed(2) + 'MB';
+                                res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + params.value + 'MB';
                             }
                             return res;
                         }

@@ -60,7 +60,7 @@ export const appRouter = [
 	},
 	{
         path: '/bulletin',
-        icon: 'android-checkbox',
+        icon: 'ios-bell',
         name: 'bulletin',
         component: Main,
         children: [
@@ -69,7 +69,7 @@ export const appRouter = [
 	},
 	{
         path: '/permission',
-        icon: 'android-checkbox',
+        icon: 'android-contacts',
         name: 'permission',
         component: Main,
         children: [
