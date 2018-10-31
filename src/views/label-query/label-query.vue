@@ -65,12 +65,15 @@
 				</p>
 				<Row :gutter="10" class="margin-top-10" v-if="result[0].children.length>0">
 					<Col span="4" v-for="(item,index) in result[0].children" :key="index" class="margin-top-10">
-						<Button style="height: 70px;" type="info" long @click="toChild(item.LABEL_CODE)">{{item.LABEL_NAME}}</Button>
+						<Button style="height: 40px;background-color: white" type="info" long @click="toChild(item.LABEL_CODE)">{{item.LABEL_NAME}}</Button>
 					</Col>
 				</Row>
 				<Row :gutter="10" class="margin-top-10" v-else>
 					<div> 未查询到子级标签</div>
 				</Row>
+			</Card>
+			<Card class="margin-top-10" v-if="result.length === 0" style="text-align: center;padding: 200px 0">
+				<img src="../../images/background.png" />
 			</Card>
 			<Spin fix v-if="spinShow">
 				<Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>

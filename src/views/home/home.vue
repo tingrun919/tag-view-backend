@@ -26,7 +26,8 @@
 		<Row class="margin-top-10">
 			<Card>
 				<p slot="title" class="card-title">
-					<Icon type="map"></Icon>
+					<!--<Icon type="map"></Icon>-->
+					<img src="../../images/gonggao.png"/>
 					系统公告
 				</p>
 				<a href="#" slot="extra" @click="more">
@@ -39,7 +40,9 @@
 		<Row class="margin-top-10">
 			<Card>
 				<p slot="title" class="card-title">
-					<Icon type="ios-pricetags-outline"></Icon>
+					<!--<Icon type="ios-pricetags-outline"></Icon>-->
+					<img src="../../images/count.png"/>
+
 					业务标签量
 				</p>
 				<!-- <div class="line-chart-con"> -->
@@ -48,18 +51,22 @@
 				<Row type="flex" class="user-infor">
 					<Col span="6" style="padding-left:6px;text-align: center;line-height:300%">
 					<p>内容标签</p>
+					<p><img src="../../images/content.png"/></p>
 					<p>{{lable.content}}个</p>
 					</Col>
 					<Col span="6" style="padding-left:6px;text-align: center;line-height:300%">
 					<p>APP偏好标签</p>
+					<p><img src="../../images/app.png"/></p>
 					<p>{{lable.app}}个</p>
 					</Col>
 					<Col span="6" style="padding-left:6px;text-align: center;line-height:300%">
 					<p>兴趣偏好</p>
+					<p><img src="../../images/habbit.png"/></p>
 					<p>{{lable.prefer}}个</p>
 					</Col>
 					<Col span="6" style="padding-left:6px;text-align: center;line-height:300%">
 					<p>系统更新时间</p>
+					<p><img src="../../images/time.png"/></p>
 					<p>{{time}}</p>
 					</Col>
 				</Row>
