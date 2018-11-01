@@ -49,23 +49,6 @@
 						align: 'center',
 					},
 					{
-						title: '发布状态',
-						key: 'noticeState',
-						align: 'center',
-						sortable: true,
-						render: (h, params) => {
-							const row = params.row;
-							const type = row.noticeState == 0 ? 'error' : 'primary';
-							const text = row.noticeState == 0 ? '未发布' : '发布'
-							return h('Button', {
-								props: {
-									type: type,
-									size: 'small'
-								},
-							}, text);
-						},
-					},
-					{
 						title: '操作',
 						key: 'action',
 						align: 'center',

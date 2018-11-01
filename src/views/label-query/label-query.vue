@@ -1,6 +1,6 @@
 <style lang="less" scoped>
-	@import '../../styles/common.less';
-	@import './label-query.less';
+@import "../../styles/common.less";
+@import "./label-query.less";
 </style>
 <template>
 	<div > 
@@ -13,7 +13,7 @@
 					</Select>
 					<span class="margin-left-10">标签名称</span>
 					<Dropdown trigger="custom" :visible="visible"  @on-click="dropChange">
-						<Input v-model="phone" placeholder="请输入标签名称" clearable style="width: 200px" @on-blur="inputChange" @on-enter="inputChange" />
+						<Input v-model="phone" placeholder="请输入标签名称" clearable style="width: 200px"  @on-enter="inputChange" />
 						<DropdownMenu  slot="list" style="width: 200px;maxHeight:300px;overflowY:auto"  v-if="tagList" >
 							<DropdownItem  v-for="(item,index) in tagList" :key ="index" :name="item.LABEL_CODE+','+item.LABEL_NAME" >{{item.LABEL_NAME}}</DropdownItem>
 							<div style="margin:10px;">
@@ -83,137 +83,169 @@
 	</div>
 </template>
 <script>
-	import lableQuery from "../../service/labelQuery.js"
-	export default {
-		mixins:[lableQuery],
-		data() {
-			return {
-				cityList: [
-					{
-						value: '1',
-						label: '内容标签'
-					},
-					{
-						value: '2',
-						label: 'APP偏好标签'
-					},
-					{
-						value: '3',
-						label: '兴趣标签'
-					},
-				],
-				model1: '1',
-				phone: '',
-				tagList:[],
-				result:[],
-				value:"",
-				visible:false,
-				code:"",
-				spinShow:false,
-			}
-		},
-		methods:{
-			keydown(e){
-				console.log(e)
-				if(e.code =="Space"){
-					var that =this
-					this.value =this.phone
-					var params = {
-						type:this.model1,
-						name:this.value ,
-						
-					}
-					this.selectAllLable(params).then(res => {
-						console.log(res)
-						that.tagList = res
-						that.visible = true;
-					})
-				}
-			},
-			inputChange(){
-				var that =this
-				this.value =this.phone
-				var params = {
-					type:this.model1,
-					name:this.value ,
-					
-				}
-				this.selectAllLable(params).then(res => {
-					console.log(res)
-					that.tagList = res
-					that.visible = true;
-				})
-				console.log(this.tagList)
-			},
-			dropChange(name){
-				this.result=[];
-				console.log(name)
-				// 点击下拉项应用到输入框中并更新code
-				this.phone= name.split(",")[1];
-				this.code= name.split(",")[0];
-				var that =this;
-				this.spinShow = true;
-				var params = {
-					type:this.model1,
-					code:this.code ,
-				}
-				this.selectAllLable1(params).then(res => {
-					console.log(res)
-					that.result.push(res)
-					that.spinShow=false
-				})
-				setTimeout(() => {
-                   that.spinShow=false
-                },2000);
-				console.log(this.result)
-			},
-			handleClose(){
-				this.visible=false
-			},
-			search(){
-				var that =this;
-				this.spinShow = true;
-				that.result=[];
-				var params = {
-					type:this.model1,
-					code:this.code ,
-				}
-				this.selectAllLable1(params).then(res => {
-					console.log(res)
-					that.result.push(res)
-					that.spinShow=false
-				})
-				setTimeout(() => {
-                   that.spinShow=false
-                },2000);
-				console.log(this.result)
-			},
-			toChild(code){
-				var that =this
-				that.result=[];
-				var params = {
-					type:this.model1,
-					code:code ,
-				}
-				this.selectAllLable1(params).then(res => {
-					console.log(res)
-					that.result.push(res)
-				})	
-				console.log(this.result)
-			}
-		}
-	}
+import lableQuery from "../../service/labelQuery.js";
+import { Message } from "iview";
+export default {
+  mixins: [lableQuery],
+  data() {
+    return {
+      cityList: [
+        {
+          value: "1",
+          label: "内容标签"
+        },
+        {
+          value: "2",
+          label: "APP偏好标签"
+        },
+        {
+          value: "3",
+          label: "兴趣标签"
+        }
+      ],
+      model1: "1",
+      phone: "",
+      tagList: [],
+      result: [],
+      value: "",
+      visible: false,
+      code: "",
+      spinShow: false,
+      type: false
+    };
+  },
+  methods: {
+    keydown(e) {
+      console.log(e);
+      if (e.code == "Space") {
+        var that = this;
+        this.value = this.phone;
+        var params = {
+          type: this.model1,
+          name: this.value
+        };
+        this.selectAllLable(params).then(res => {
+          if (res.length > 0) {
+            console.log(res);
+            that.tagList = res;
+            that.visible = true;
+          } else {
+            Message.error("暂无数据，请重新查询");
+          }
+        });
+      }
+    },
+    inputChange() {
+      var that = this;
+      this.value = this.phone;
+      var params = {
+        type: this.model1,
+        name: this.value
+      };
+      this.selectAllLable(params).then(res => {
+        if (res.length > 0) {
+          console.log(res);
+          that.tagList = res;
+          that.visible = true;
+        } else {
+          Message.error("暂无数据，请重新查询");
+        }
+      });
+    },
+    dropChange(name) {
+      this.result = [];
+      console.log(name);
+      // 点击下拉项应用到输入框中并更新code
+      this.phone = name.split(",")[1];
+      this.code = name.split(",")[0];
+      var that = this;
+      this.type = true;
+      this.spinShow = true;
+      var params = {
+        type: this.model1,
+        code: this.code
+      };
+      this.selectAllLable1(params).then(res => {
+        console.log(res);
+        that.result.push(res);
+        that.spinShow = false;
+      });
+      setTimeout(() => {
+        that.spinShow = false;
+      }, 2000);
+      console.log(this.result);
+    },
+    handleClose() {
+      this.visible = false;
+    },
+    search() {
+      if (this.type) {
+        var that = this;
+        this.spinShow = true;
+        that.result = [];
+        var params = {
+          type: this.model1,
+          code: this.code
+        };
+        this.selectAllLable1(params).then(res => {
+          console.log(res);
+          that.result.push(res);
+          that.spinShow = false;
+        });
+        setTimeout(() => {
+          that.spinShow = false;
+        }, 2000);
+        console.log(this.result);
+      } else {
+        var that = this;
+        this.value = this.phone;
+        var params = {
+          type: this.model1,
+          name: this.value
+        };
+        this.selectAllLable(params).then(res => {
+          if (res.length > 0) {
+            console.log(res);
+            that.tagList = res;
+            that.visible = true;
+          } else {
+            Message.error("暂无数据，请重新查询");
+          }
+        });
+      }
+    },
+    toChild(code) {
+      var that = this;
+      that.result = [];
+      var params = {
+        type: this.model1,
+        code: code
+      };
+      this.selectAllLable1(params).then(res => {
+        console.log(res);
+        that.result.push(res);
+      });
+      console.log(this.result);
+    }
+  }
+};
 </script>
 <style lang="less" scoped>
-	.demo-spin-icon-load{
-        animation: ani-demo-spin 1s linear infinite;
-    }
-    @keyframes ani-demo-spin {
-        from { transform: rotate(0deg);}
-        50%  { transform: rotate(180deg);}
-        to   { transform: rotate(360deg);}
-	}
-	.demo-spin-col{
-        position: relative;
-    }
+.demo-spin-icon-load {
+  animation: ani-demo-spin 1s linear infinite;
+}
+@keyframes ani-demo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.demo-spin-col {
+  position: relative;
+}
 </style>
