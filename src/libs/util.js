@@ -15,8 +15,8 @@ const ajaxUrl = env === 'development'
     ? 'http://192.168.10.196:8080/biaoqian_admin/'
 // ? 'http://39.107.78.100:8080/biaoqian_admin/'
     : env === 'production'
-        ? 'http://10.162.233.222:8081/biaoqian_admin/'
-        : 'http://10.162.233.222:8081/biaoqian_admin/';
+        ? 'http://10.162.233.222:8888/biaoqian_admin/'
+        : 'http://10.162.233.222:8888/biaoqian_admin/';
         // : 'http://192.168.10.196:8080/biaoqian_admin/';
 
 axios.defaults.baseURL = ajaxUrl;
