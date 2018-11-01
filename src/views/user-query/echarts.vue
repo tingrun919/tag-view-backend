@@ -87,7 +87,7 @@
                             } else if (params.seriesName === '时长统计') {
                                 res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + params.value + '分钟';
                             } else {
-                                res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + params.value + 'MB';
+                                res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + params.value + 'Kb';
                             }
                             return res;
                         }
