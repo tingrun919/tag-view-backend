@@ -28,7 +28,7 @@
                                 <img src="../../images/internet.png"/>
                                 本期互联网内容偏好
                             </p>
-                            <Carousel v-model="internet" :dots="dots" :arrow="arrow" @on-change="change" class="content">
+                            <Carousel v-model="internet" :dots="dots" :arrow="arrow" @on-change="changeWeb" class="content">
                                 <CarouselItem v-for="item in pageInternet" cla>
                                     <Row type="flex" justify="start">
                                         <Col span="3" style="margin:0 2%" v-for="(children,index) in web" :key="index">
@@ -61,7 +61,7 @@
                                 <span>本期APP偏好</span>
                                 <span @click="day" style="float: right">查看APP明细日数据</span>
                             </p>
-                            <Carousel v-model="app" :dots="dots" :arrow="arrow" @on-change="change">
+                            <Carousel v-model="app" :dots="dots" :arrow="arrow" @on-change="changeApp">
                                 <CarouselItem v-for="item in pageApp">
                                     <Row type="flex" justify="start">
                                         <Col span="3" style="margin: 0 2%" v-for="(children,index) in apps" :key="index">
@@ -90,14 +90,14 @@
                                 <img src="../../images/like.png"/>
                                 本期兴趣偏好
                             </p>
-                            <Carousel v-model="interest" :dots="dots" :arrow="arrow">
+                            <Carousel v-model="interest" :dots="dots" :arrow="arrow" @on-change="changeHabbit">
                                 <CarouselItem v-for="item in pageHabbit">
                                     <Row type="flex" justify="start">
                                         <Col span="3" style="margin: 0 2%" v-for="(children,index) in habbit" :key="index">
                                             <Card style="min-height: 237px">
                                                 <p slot="title" style="text-align: center;font-size: 16px;">{{children['n030002']}}</p>
                                                 <div style="text-align: center;">
-                                                    <p style="font-weight: bold;">评分等级：{{children.n030005}}</p>
+                                                    <p style="font-weight: bold;">时长：{{ (children.n030007/3600).toFixed(2) }} H</p>
                                                     <div class="custom-tag margin-top-10" v-bind:style="[{backgroundColor:'#2d8cf0'}]" v-if="children.secList.length>0">
                                                     <span >
                                                         {{children.secList[0].n030002}}
@@ -166,7 +166,7 @@
                     <div slot="footer">
                     </div>
                 </Modal>
-                <Modal v-model="modalDay" width="60%" :closable="false">
+                <Modal v-model="modalDay" width="60%" :closable="false" style="height:60%">
                     <p slot="header" style="color:#2d8cf0;font-size: 20px;height: auto;">
                         <Icon type="information-circled"></Icon>
                         <span style="margin-right: 10px">App明细日数据查询</span>
@@ -180,7 +180,6 @@
                         </Select>
                         <Button @click="searchDate" style="margin-left: 10px" type="primary"> 搜索</Button>
                     </Row>
-                    <Row>
                         <Echarts :echartStyle="styles"
                                        :tooltipFormatter="tooltip"
                                        :opinion="dataLength"
@@ -193,7 +192,6 @@
                             <div v-if="dataLength.length === 0" style="padding: 20px;text-align: center">暂无数据</div>
                         </Row>
                         <Spin size="large" fix v-if="spinShow"></Spin>
-                    </Row>
                     <div slot="footer">
                         <Button @click="echarts" type="primary">确定</Button>
                     </div>
@@ -256,7 +254,7 @@
                 seriesName: '',
                 dataList: [],
                 styles: {
-                    height: '500px',
+                    height: '100%',
                     width: '100%'
                 },
                 list: [
@@ -408,19 +406,27 @@
                 this.timeValue = value;
                 this.dates = value + '-01';
             },
-            change (oldValue, value) {
+            changeWeb (oldValue, value) {
                 let arrInternet = [];
-                let arrApp = [];
-                let arrHabbit = [];
                 for (var i = value * 6; i < (value + 1) * 6; i++) {
                     if (this.N02[i]) {
                         arrInternet.push(this.N02[i]);
                         this.web = arrInternet;
                     }
+                }
+            },
+            changeApp (oldValue, value) {
+                let arrApp = [];
+                for (var i = value * 6; i < (value + 1) * 6; i++) {
                     if (this.N01[i]) {
                         arrApp.push(this.N01[i]);
                         this.apps = arrApp;
                     }
+                }
+            },
+            changeHabbit (oldValue, value) {
+                let arrHabbit = [];
+                for (var i = value * 6; i < (value + 1) * 6; i++) {
                     if (this.N03[i]) {
                         arrHabbit.push(this.N03[i]);
                         this.habbit = arrHabbit;

@@ -2,7 +2,7 @@
 <template>
       <div>
         <!-- echart表格 -->
-        <div id="myChart" :style="echartStyle"></div>
+        <div id="myChart" :style="echartStyle" ref="myEchart"></div>
       </div>
 </template>
  
@@ -60,8 +60,19 @@
             this.$nextTick(function () {
                 this.drawPie('myChart');
             });
+            this.init();
         },
         methods: {
+            init () {
+                const self = this;
+                // 因为箭头函数会改变this指向，指向windows。所以先把this保存
+                setTimeout(() => {
+                    window.onresize = function () {
+                        self.chart = self.$echarts.init(self.$refs.myEchart);
+                        self.chart.resize();
+                    };
+                }, 20);
+            },
             // 监听扇形图点击
             eConsole (param) {
                 // 向父组件传值
@@ -87,7 +98,7 @@
                             } else if (params.seriesName === '时长统计') {
                                 res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + params.value + '分钟';
                             } else {
-                                res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + params.value + 'Kb';
+                                res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + params.value + 'MB';
                             }
                             return res;
                         }
@@ -106,8 +117,8 @@
                             name: this.seriesName,
                             // 提示框标题
                             type: 'pie',
-                            radius: '65%',
-                            center: ['50%', '50%'],
+                            radius: '25%',
+                            // center: ['0%', '0%'],
                             selectedMode: 'single',
                             data: this.opinionData,
                             // 扇形区域数据
@@ -116,6 +127,7 @@
                                     shadowBlur: 10,
                                     shadowOffsetX: 0,
                                     shadowColor: 'rgba(0, 0, 0, 0.5)'
+
                                 }
                             }
                         }
@@ -128,5 +140,7 @@
  
 <style lang="less" scoped>
       #myChart {
-        width: 100%;}
+        width: 50%;
+        height: 50%
+    }
 </style>

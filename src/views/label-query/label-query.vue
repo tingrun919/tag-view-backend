@@ -13,12 +13,9 @@
 					</Select>
 					<span class="margin-left-10">标签名称</span>
 					<Dropdown trigger="custom" :visible="visible"  @on-click="dropChange">
-						<Input v-model="phone" placeholder="请输入标签名称" clearable style="width: 200px"  @on-enter="inputChange" />
-						<DropdownMenu  slot="list" style="width: 200px;maxHeight:300px;overflowY:auto"  v-if="tagList" >
+						<Input v-model="phone" placeholder="请输入标签名称" clearable style="width: 200px"   @on-enter="inputChange" @on-focus="inputFocus" />
+						<DropdownMenu  slot="list" style="width: 200px;maxHeight:300px;overflowY:auto"  v-if="tagList" v-show="showDropdownmenu">
 							<DropdownItem  v-for="(item,index) in tagList" :key ="index" :name="item.LABEL_CODE+','+item.LABEL_NAME" >{{item.LABEL_NAME}}</DropdownItem>
-							<div style="margin:10px;">
-								<Button type="primary" @click="handleClose">关闭</Button>
-							</div>
 						</DropdownMenu>
 						<DropdownMenu slot="list" v-else style="width: 200px">
 							<DropdownItem name="暂无数据">暂无数据</DropdownItem>
@@ -38,11 +35,11 @@
 						标签详情
 					</p>
 					<span class="margin-right-5 margin-left-10">标签名称:</span>
-					<span style="width: 200px;display:inline-block;font-size:18px;font-weight:bold">{{result[0].parent.LABEL_NAME}}</span>
+					<span style="display:inline-block;font-size:18px;font-weight:bold">{{result[0].parent.LABEL_NAME}}</span>
 					<span class="margin-right-5 margin-left-10">标签编码:</span>
-					<span style="width: 200px;display:inline-block;font-size:18px;font-weight:bold">{{result[0].parent.LABEL_CODE_BONC}}</span>
+					<span style="display:inline-block;font-size:18px;font-weight:bold">{{result[0].parent.LABEL_CODE_BONC}}</span>
 					<span class="margin-right-5 margin-left-10">标签创建时间:</span>
-					<span style="width: 200px;display:inline-block;font-size:18px;font-weight:bold">{{result[0].parent.UPDATE_DATE}}</span>
+					<span style="display:inline-block;font-size:18px;font-weight:bold">{{result[0].parent.UPDATE_DATE}}</span>
 
 				</Card>
 				</Col>
@@ -65,15 +62,12 @@
 				</p>
 				<Row :gutter="10" class="margin-top-10" v-if="result[0].children.length>0">
 					<Col span="4" v-for="(item,index) in result[0].children" :key="index" class="margin-top-10">
-						<Button style="height: 40px;background-color: white;color: black" type="info" long @click="toChild(item.LABEL_CODE)">{{item.LABEL_NAME}}</Button>
+						<Button style="height: 70px;" type="info" long @click="toChild(item.LABEL_CODE)">{{item.LABEL_NAME}}</Button>
 					</Col>
 				</Row>
 				<Row :gutter="10" class="margin-top-10" v-else>
 					<div> 未查询到子级标签</div>
 				</Row>
-			</Card>
-			<Card class="margin-top-10" v-if="result.length === 0" style="text-align: center;padding: 200px 0">
-				<img src="../../images/background.png" />
 			</Card>
 			<Spin fix v-if="spinShow">
 				<Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
@@ -111,13 +105,21 @@ export default {
       visible: false,
       code: "",
       spinShow: false,
-      type: false
+      type: false,
+      showDropdownmenu:false
     };
   },
   methods: {
+    inputFocus(){
+      // 判断是否存在
+      if(this.tagList.length>0){
+        this.showDropdownmenu=true
+      }
+    },
     keydown(e) {
       console.log(e);
       if (e.code == "Space") {
+        this.showDropdownmenu = true
         var that = this;
         this.value = this.phone;
         var params = {
@@ -147,6 +149,7 @@ export default {
           console.log(res);
           that.tagList = res;
           that.visible = true;
+          that.showDropdownmenu = true
         } else {
           Message.error("暂无数据，请重新查询");
         }
@@ -161,6 +164,7 @@ export default {
       var that = this;
       this.type = true;
       this.spinShow = true;
+      this.showDropdownmenu = false
       var params = {
         type: this.model1,
         code: this.code
@@ -208,6 +212,7 @@ export default {
             console.log(res);
             that.tagList = res;
             that.visible = true;
+          that.showDropdownmenu = true
           } else {
             Message.error("暂无数据，请重新查询");
           }
