@@ -127,7 +127,7 @@ export default {
 	            },
             	user: {
                 	name: '',
-                	status: '',
+                	status: '0',
                 	dec: ''
 	            },
 	            editContent: {
@@ -238,18 +238,19 @@ export default {
 	            this.query();
 	        },
 	        addOk (name) {
-	            this.isAdd = false;
 	            this.$refs[name].validate((valid) => {
 	                if (valid) {
-	                    const param = {
+						const param = {
 	                        roleName: this.user.name,
 	                        roleState: this.user.status,
 	                        roleDesc: this.user.dec
 	                    };
 	                    this.addRol(param)
-	                        .then(res => { this.query(); });
-	                } else {
-	                    this.$Message.error('表单验证失败!');
+	                        .then(res => {
+                                this.isAdd = false;
+								this.query();
+                                this.$refs[name].resetFields();
+	                        });
 	                }
 	            });
 	        },

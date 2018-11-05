@@ -2,7 +2,7 @@
 <template>
       <div>
         <!-- echart表格 -->
-        <div id="myChart" :style="echartStyle" ref="myEchart"></div>
+        <div id="myChart" style='{height:400px}' ref="myEchart"></div>
       </div>
 </template>
  
@@ -98,18 +98,17 @@
                             } else if (params.seriesName === '时长统计') {
                                 res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + params.value + '分钟';
                             } else {
-                                res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + params.value + 'MB';
+                                res = this.seriesName + '<br />' + this.tooltipFormatter + ' : ' + params.value + 'KB';
                             }
                             return res;
                         }
                     },
                     legend: {
                         type: 'scroll',
-                        orient: 'vertical',
-                        right: 0,
-                        top: 30,
-                        bottom: 20,
-                        data: this.opinion
+                        orient: 'horizontal',
+                        data: this.opinion,
+                        width:'50%',
+                        selected: this.selected(),
                         // 扇形区域名称
                     },
                     series: [
@@ -117,8 +116,8 @@
                             name: this.seriesName,
                             // 提示框标题
                             type: 'pie',
-                            radius: '25%',
-                            // center: ['0%', '0%'],
+                            radius: '70%',
+                            center: ['50%', '60%'],
                             selectedMode: 'single',
                             data: this.opinionData,
                             // 扇形区域数据
@@ -133,14 +132,20 @@
                         }
                     ]
                 });
-            }
+            },
+            selected() {
+                var obj = {};
+                for (var i = 10; i < this.opinion.length; i++) {
+                    obj[this.opinion[i]] = false
+                }
+                return obj
+            },
         }
     };
 </script>
  
 <style lang="less" scoped>
       #myChart {
-        width: 50%;
-        height: 50%
+        height: 400px
     }
 </style>

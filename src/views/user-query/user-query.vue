@@ -8,7 +8,7 @@
             <Col>
                 <Card>
                     <span>手机号码查询</span>
-                    <Input v-model="phone" placeholder="请输入标题名称" clearable style="width: 200px"></Input>
+                    <Input v-model="phone" placeholder="请输入手机号码" clearable style="width: 200px"></Input>
                     <span class="margin-left-10">选择账期</span>
                     <DatePicker type="month" placeholder="请选择账期" style="width: 200px" v-model="date" @on-change="changeDate"></DatePicker>
                     <Button class="margin-left-10" type="primary" icon="search" @click="query">查询</Button>
@@ -59,7 +59,7 @@
                                 <!--<Icon type="ipad"></Icon>-->
                                 <img src="../../images/appLike.png"/>
                                 <span>本期APP偏好</span>
-                                <span @click="day" style="float: right">查看APP明细日数据</span>
+                                <span @click="day" style="cursor:pointer;float: right">查看APP明细日数据</span>
                             </p>
                             <Carousel v-model="app" :dots="dots" :arrow="arrow" @on-change="changeApp">
                                 <CarouselItem v-for="item in pageApp">
@@ -166,7 +166,7 @@
                     <div slot="footer">
                     </div>
                 </Modal>
-                <Modal v-model="modalDay" width="60%" :closable="false" style="height:60%">
+                <Modal v-model="modalDay" width="50%" @on-cancel="echarts">
                     <p slot="header" style="color:#2d8cf0;font-size: 20px;height: auto;">
                         <Icon type="information-circled"></Icon>
                         <span style="margin-right: 10px">App明细日数据查询</span>
@@ -193,7 +193,7 @@
                         </Row>
                         <Spin size="large" fix v-if="spinShow"></Spin>
                     <div slot="footer">
-                        <Button @click="echarts" type="primary">确定</Button>
+                        <!--<Button @click="echarts" type="primary">确定</Button>-->
                     </div>
                 </Modal>
             </Card>
@@ -449,14 +449,14 @@
                 this.numberHabbit = children.n030006;
                 this.habbitTable = children.secList;
             },
-            day () {
-                this.modalDay = true;
-                this.searchDate();
-            },
             echarts () {
                 this.modalDay = false;
                 this.select = 1;
                 this.dates = this.timeValue + '-01';
+            },
+            day () {
+                this.modalDay = true;
+                this.searchDate();
             },
             searchDate () {
                 const param = {
