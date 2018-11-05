@@ -60,112 +60,113 @@
      </div>
  </template>
 <script>
-import vueWangeditor from "vue-wangeditor";
-import bulletin from "../../../service/bulletinService.js";
+import vueWangeditor from 'vue-wangeditor';
+import bulletin from '../../../service/bulletinService.js';
 export default {
-  mixins: [bulletin],
-  components: {
-    vueWangeditor
-  },
-  data() {
-    return {
-      result: "",
-      title: "",
-      creatTime: "",
-      content: "",
-      resultData: "",
-      type: "",
-      params: {
-        noticeState: 1,
-        noticeId: ""
-      },
-      menus: [
-        "source", // 源码模式
-        "|",
-        "bold", // 粗体
-        "underline", // 下划线
-        "italic", // 斜体
-        "strikethrough", // 中线
-        "eraser", // 清空格式
-        "forecolor", // 文字颜色
-        "bgcolor", // 背景颜色
-        "|",
-        "quote", // 引用
-        "fontfamily", // 字体
-        "fontsize", // 字号
-        "head", // 标题
-        "unorderlist", // 无序列表
-        "orderlist", // 有序列表
-        "alignleft", // 左对齐
-        "aligncenter", // 居中
-        "alignright", // 右对齐
-        "|",
-        "link", // 链接
-        "unlink" // 取消链接
-      ],
-      model2: "0",
-      cityList: [
-        {
-          value: "1",
-          label: "上架"
+    mixins: [bulletin],
+    components: {
+        vueWangeditor
+    },
+    data () {
+        return {
+            result: '',
+            title: '',
+            creatTime: '',
+            content: '',
+            resultData: '',
+            type: '',
+            params: {
+                noticeState: 1,
+                noticeId: ''
+            },
+            menus: [
+                'source', // 源码模式
+                '|',
+                'bold', // 粗体
+                'underline', // 下划线
+                'italic', // 斜体
+                'strikethrough', // 中线
+                'eraser', // 清空格式
+                'forecolor', // 文字颜色
+                'bgcolor', // 背景颜色
+                '|',
+                'quote', // 引用
+                'fontfamily', // 字体
+                'fontsize', // 字号
+                'head', // 标题
+                'unorderlist', // 无序列表
+                'orderlist', // 有序列表
+                'alignleft', // 左对齐
+                'aligncenter', // 居中
+                'alignright', // 右对齐
+                '|',
+                'link', // 链接
+                'unlink' // 取消链接
+            ],
+            model2: '0',
+            cityList: [
+                {
+                    value: '1',
+                    label: '上架'
+                },
+                {
+                    value: '0',
+                    label: '下架'
+                }
+            ]
+        };
+    },
+    methods: {
+        submit () {
+            console.log(this.$refs.editor.getHtml());
+            if (this.type == 'add') {
+                var params = {
+                    noticeName: this.title,
+                    noticeState: this.model2,
+                    noticeContent: this.$refs.editor.getHtml()
+                };
+                this.addBulletinAction(params).then(res => {
+                    console.log(res);
+                });
+            } else if (this.type == 'edit') {
+                var params = {
+                    noticeId: this.$route.params.id,
+                    noticeName: this.title,
+                    noticeState: this.model2,
+                    noticeContent: this.$refs.editor.getHtml()
+                };
+                this.updateStateAction(params).then(res => {
+                    console.log(res);
+                });
+            }
+            // this.$router.go(-1);
         },
-        {
-          value: "0",
-          label: "下架"
+        cancell () {
+            this.$router.go(-1);
+        },
+        getHtml (value) {
+            console.log(value);
+        },
+        getDataList () {
+            this.fetchList(this.params).then(res => {
+                console.log(res);
+                this.resultData = res;
+                if (this.type == 'edit') {
+                    this.title = res.length > 0 ? res[0].noticeName : '';
+                    this.model2 = res.length > 0 ? res[0].noticeState : '';
+                    this.resultData = res.length > 0 ? res[0].noticeContent : '';
+                }
+            });
         }
-      ]
-    };
-  },
-  methods: {
-    submit() {
-      console.log(this.$refs.editor.getHtml());
-      if (this.type == "add") {
-        var params = {
-          noticeName: this.title,
-          noticeState: this.model2,
-          noticeContent: this.$refs.editor.getHtml()
-        };
-        this.addBulletinAction(params).then(res => {
-          console.log(res);
-        });
-      } else if (this.type == "edit") {
-        var params = {
-          noticeId: this.$route.params.id,
-          noticeName: this.title,
-          noticeState: this.model2,
-          noticeContent: this.$refs.editor.getHtml()
-        };
-        this.updateStateAction(params).then(res => {
-          console.log(res);
-        });
-      }
     },
-    cancell() {
-      this.$router.go(-1);
-    },
-    getHtml(value) {
-      console.log(value);
-    },
-    getDataList() {
-      this.fetchList(this.params).then(res => {
-        console.log(res);
-        this.resultData = res;
-        if (this.type == "edit") {
-          this.title = res.length > 0 ? res[0].noticeName : "";
-          this.model2 = res.length > 0 ? res[0].noticeState : "";
-          this.resultData = res.length > 0 ? res[0].noticeContent : "";
+    mounted () {
+        console.log(this.$route);
+        this.params.noticeId = this.$route.params.id;
+        this.type = this.$route.query.type;
+        if (this.type == 'new' || this.type == 'edit') {
+            this.getDataList();
         }
-      });
     }
-  },
-  mounted() {
-    console.log(this.$route);
-    this.params.noticeId = this.$route.params.id;
-    this.type = this.$route.query.type;
-    if (this.type == "new" || this.type == "edit") {
-      this.getDataList();
-    }
-  }
 };
 </script>
 <style lang="less" scoped>
@@ -202,4 +203,3 @@ export default {
 }
 </style>
 
- 

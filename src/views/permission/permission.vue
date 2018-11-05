@@ -67,7 +67,7 @@
 					<Input v-model="editContent.roleName" placeholder="请输入角色名称"></Input>
 				</FormItem>
 				<FormItem label="角色状态" prop="state">
-					<RadioGroup v-model="editContent.state.toString()" size="large">
+					<RadioGroup v-model="editContent.state" size="large">
 						<Radio label="0">
 							<span>禁用</span>
 						</Radio>
@@ -132,7 +132,7 @@ export default {
 	            },
 	            editContent: {
 	                roleName: '',
-	                state: '',
+	                state: 0,
                 	roleDesc: ''
 	            },
             	isAdd: false,
@@ -144,8 +144,8 @@ export default {
 	                {
 	                    title: '序号',
 	                    key: 'index',
-                        align: 'center',
-                        width: 100,
+                    align: 'center',
+                    width: 100,
 	                    render: (h, params) => {
 	                        return h('span', `${params.index + (this.param.page - 1) * this.param.pagesize + 1}`);
 	                    }
@@ -240,16 +240,16 @@ export default {
 	        addOk (name) {
 	            this.$refs[name].validate((valid) => {
 	                if (valid) {
-						const param = {
+	                    const param = {
 	                        roleName: this.user.name,
 	                        roleState: this.user.status,
 	                        roleDesc: this.user.dec
 	                    };
 	                    this.addRol(param)
 	                        .then(res => {
-                                this.isAdd = false;
-								this.query();
-                                this.$refs[name].resetFields();
+                            this.isAdd = false;
+	                            this.query();
+                            this.$refs[name].resetFields();
 	                        });
 	                }
 	            });
@@ -264,9 +264,9 @@ export default {
 	            });
 	            this.selRole(this.param)
 	                .then(res => {
-                    	this.isEdit = true;
+	                    this.isEdit = true;
 	                    this.editContent.roleName = res.list[0].roleName;
-	                    this.editContent.state = res.list[0].roleState;
+	                    this.editContent.state = res.list[0].roleState.toString();
 	                    this.editContent.roleDesc = res.list[0].roleDesc;
 	                });
 	        },

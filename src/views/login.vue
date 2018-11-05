@@ -66,6 +66,10 @@
 	                    this.loginAction(this.form).then(result => {
 	                        this.loading = false;
 	                        if (result) {
+                            this.$store.commit('clearAllTags');
+                            this.$router.push({
+                                name: 'home_index'
+                            });
 	                            Cookies.set('user', this.form.usercount);
 	                            Cookies.set('password', this.form.password);
                             	Cookies.set('role', result.staffDesc);
